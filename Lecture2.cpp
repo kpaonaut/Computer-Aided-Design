@@ -1,11 +1,10 @@
 #include <iostream>
 
 // GLAD
-#include "glad/glad.h"
+#include <glad/glad.h>
 
 // GLFW
 #include <GLFW/glfw3.h>
-
 
 // Function prototypes
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode);
@@ -33,8 +32,9 @@ int main()
 	// Init GLFW
 	glfwInit();
 	// Set all the required options for GLFW
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
+    glfwWindowHint (GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); // ONLY FOR MACOS
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 	glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
 
@@ -43,7 +43,7 @@ int main()
 	glfwMakeContextCurrent(window);
 
 	// Set the required callback functions
-	glfwSetKeyCallback(window, key_callback);
+	glfwSetKeyCallback(window, key_callback); // assertion failed
 
 	// Initialize GLAD to setup the OpenGL Function pointers
 	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
@@ -56,7 +56,6 @@ int main()
 	int width, height;
 	glfwGetFramebufferSize(window, &width, &height);
 	glViewport(0, 0, width, height);
-
 
 	// Build and compile our shader program
 	// Vertex shader

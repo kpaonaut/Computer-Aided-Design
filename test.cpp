@@ -1,8 +1,7 @@
 /* Ask for an OpenGL Core Context */
-//#include "glad/glad.h"
-
 #include <iostream>
-#define GLFW_INCLUDE_GLCOREARB
+#include "glad/glad.h"
+
 #include <GLFW/glfw3.h>
 
 #define BUFFER_OFFSET(i) ((char *)NULL + (i))
@@ -55,12 +54,20 @@ int main(int argc, char** argv)
   // register callback functions
   glfwSetKeyCallback(window, key_callback);
 
+    // Initialize GLAD to setup the OpenGL Function pointers
+    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
+    {
+        std::cout << "Failed to initialize glad" << std::endl;
+        return -1;
+    }
   // define shader
     // Build and compile our shader program
     // Vertex shader
-    GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
+    GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER); // MUST initilize glad first, or this function will crash!
+
     glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
     glCompileShader(vertexShader);
+
     // Check for compile time errors
     GLint success;
     GLchar infoLog[512];
@@ -95,7 +102,6 @@ int main(int argc, char** argv)
     glDeleteShader(vertexShader);
     glDeleteShader(fragmentShader);
 
-
   // draw triangle
   GLfloat vertices[] = {
    -1.0f, -1.0f, 0.0f,
@@ -118,7 +124,6 @@ int main(int argc, char** argv)
     glBindBuffer(GL_ARRAY_BUFFER, 0); // Note that this is allowed, the call to glVertexAttribPointer registered VBO as the currently bound vertex buffer object so afterwards we can safely unbind
 
     glBindVertexArray(0); // Unbind VAO (it's always a good thing to unbind any buffer/array to prevent strange bugs)
-
 
   /* Loop until the user closes the window */
   while (!glfwWindowShouldClose(window))
