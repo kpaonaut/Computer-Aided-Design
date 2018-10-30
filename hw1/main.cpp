@@ -316,13 +316,13 @@ void setDisplayMode(GLint &mode){
 
 void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 {
+    return; // cancel mouse effects
     if (firstMouse)
     {
         lastX = xpos;
         lastY = ypos;
         firstMouse = false;
     }
-    
     GLfloat xoffset = xpos - lastX;
     GLfloat yoffset = lastY - ypos; // Reversed since y-coordinates go from bottom to left
     lastX = xpos;
