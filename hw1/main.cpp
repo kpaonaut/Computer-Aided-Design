@@ -1,5 +1,7 @@
 #include <iostream>
 #include <cmath>
+#include <random>
+#include <ctime> 
 
 // GLAD
 #include "../glad/glad.h"
@@ -17,13 +19,22 @@
 #include "camera.h"
 #include "parse_obj.h"
 
+// define different display modes
+#define MODE_FILL 0
+#define MODE_LINE 1
+#define MODE_POINT 2
+#define MODE_FILL_AND_LINE 3
 
-// Function prototypes
+// Function declarations
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
-void do_movement();
+void do_movement(glm::mat4 &model);
+void do_colorVarying(GLfloat &rTimeVarying, GLfloat &gTimeVarying, GLfloat &bTimeVarying, 
+                     GLfloat &rLastTime, GLfloat &rTotalTime, GLfloat &gLastTime, GLfloat &gTotalTime, 
+                     GLfloat &bLastTime, GLfloat &bTotalTime, bool &rInProcess, bool &gInProcess, bool &bInProcess);
+void setDisplayMode(GLint &mode);
 
 // Window dimensions
 GLuint WIDTH = 800, HEIGHT = 600;
@@ -67,113 +78,73 @@ int main()
         return -1;
     }
     glEnable(GL_DEPTH_TEST);
+    glEnable(GL_PROGRAM_POINT_SIZE);
     // Build and compile our shader program
     Shader ourShader("main.vert.glsl", "main.frag.glsl");
-    // Set up vertex data (and buffer(s)) and attribute pointers
-    /*GLfloat vertices[] = {
-        // x     y     z    texture coordinates
-        -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
-        0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
-        0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-        0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-        -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-        -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
-        
-        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-        0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-        0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
-        0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
-        -0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
-        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-        
-        -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-        -0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-        -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-        
-        0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-        0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-        0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-        0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-        0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-        0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-        
-        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-        0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
-        0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-        0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-        
-        -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-        0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-        0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-        0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-        -0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
-        -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-    };*/
+
+    /***************************************************/
     GLfloat *verticesPointer;
     int numFaces;
     char filename[] = "eight.uniform.obj";
     verticesPointer = readObjFile(filename, numFaces);
-    GLfloat vertices[NUM];
-    for (int i = 0; i < numFaces; i ++){
-        vertices[i] = verticesPointer[i];
-    }
 
-    /* glm::vec3 cubePositions[] = {
-        glm::vec3( 0.0f,  0.0f,  0.0f),
-        glm::vec3( 2.0f,  5.0f, -15.0f),
-        glm::vec3(-1.5f, -2.2f, -2.5f),
-        glm::vec3(-3.8f, -2.0f, -12.3f),
-        glm::vec3( 2.4f, -0.4f, -3.5f),
-        glm::vec3(-1.7f,  3.0f, -7.5f),
-        glm::vec3( 1.3f, -2.0f, -2.5f),
-        glm::vec3( 1.5f,  2.0f, -2.5f),
-        glm::vec3( 1.5f,  0.2f, -1.5f),
-        glm::vec3(-1.3f,  1.0f, -1.5f)
-    }; */
     glm::vec3 initialPosition = glm::vec3(0.0f,  0.0f,  0.0f);
     GLuint VBO, VAO;
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
     glBindVertexArray(VAO);
-    
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    
     glBufferData(GL_ARRAY_BUFFER, sizeof(*verticesPointer)*numFaces*15, verticesPointer, GL_STATIC_DRAW);
-    //glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(glm::vec3), &vertices[0], GL_STATIC_DRAW);
     // Position attribute
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (GLvoid*)0);
     glEnableVertexAttribArray(0);
-    
     glBindVertexArray(0); // Unbind VAO
     
-    // for (int i = 0; i < numFaces; i++){
-    //     printf("%f %f %f %f %f\n", vertices[i * 5], vertices[i * 5 + 1], vertices[i * 5 + 2], vertices[i * 5 + 3], vertices[i * 5 + 4]);
-    // }
-    // Game loop
+    // initialize model attitude & position (transform)
+    glm::mat4 model(1);
+    model = glm::translate(model, initialPosition); // no need to translate here
+    GLfloat angle = 0.0f;
+    model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.0f, 0.0f));
+
+    // initilize color for fill mode
+    glm::vec4 varyingColor = glm::vec4(0.0f, 0.5f, 0.2f, 1.0f);
+    GLfloat *rValue = new GLfloat[numFaces];
+    GLfloat *gValue = new GLfloat[numFaces];
+    GLfloat *bValue = new GLfloat[numFaces];
+    srand((unsigned)time(0)); 
+    for (GLint i = 0; i < numFaces; i ++){
+        rValue[i] = (std::rand() % 100 + 0.0) / 100.0;
+        gValue[i] = (std::rand() % 100 + 0.0) / 100.0;
+        bValue[i] = (std::rand() % 100 + 0.0) / 100.0;
+    }
+    // initilize color for line/point mode
+    GLfloat rTimeVarying = 0.5f, gTimeVarying = 0.5f, bTimeVarying = 0.5f;
+    GLfloat rLastTime, rTotalTime, gLastTime, gTotalTime, bLastTime, bTotalTime;
+    bool rInProcess = false, bInProcess = false, gInProcess = false;
+
+    // initialize default display mode
+    GLint displayMode = MODE_FILL; // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
+    /****************************************************/
+    // Game loop     
     while (!glfwWindowShouldClose(window))
     {
         // Calculate deltatime of current frame
         GLfloat currentFrame = glfwGetTime();
         deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;
-        
         // Check if any events have been activiated (key pressed, mouse moved etc.) and call corresponding response functions
         glfwPollEvents();
-        do_movement();
-        
+        do_movement(model);
+        do_colorVarying(rTimeVarying, gTimeVarying, bTimeVarying, rLastTime, rTotalTime, gLastTime, gTotalTime, 
+            bLastTime, bTotalTime, rInProcess, gInProcess, bInProcess);
+
         // Render
         // Clear the colorbuffer
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); 
         // Activate shader
         ourShader.Use();
-        
         // Camera/View transformation
         glm::mat4 view(1);
         view = camera.GetViewMatrix();
@@ -184,27 +155,46 @@ int main()
         GLint modelLoc = glGetUniformLocation(ourShader.Program, "model");
         GLint viewLoc = glGetUniformLocation(ourShader.Program, "view");
         GLint projLoc = glGetUniformLocation(ourShader.Program, "projection");
+        GLint varyingColorLoc = glGetUniformLocation(ourShader.Program, "varyingColor");
         // Pass the matrices to the shader
         glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
         glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(projection));
         
         glBindVertexArray(VAO);
+        setDisplayMode(displayMode);
+        //glPolygonMode(GL_FRONT, GL_FILL);
 
-        glPolygonMode(GL_FRONT, GL_FILL); // can adjust to different modes!
+        // Calculate the model matrix for each object and pass it to shader before drawing
+        glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model)); // set model as transformation
 
-        for (GLuint i = 0; i < 1; i++)// draw 10 cubes, each at a different location
-        {
-            // Calculate the model matrix for each object and pass it to shader before drawing
-            glm::mat4 model(1);
-            model = glm::translate(model, initialPosition); // no need to translate here
-            GLfloat angle = 20.0f * i;
-            model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
-            glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
-            
+        if (displayMode == MODE_FILL){
+            glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+            for (int i = 0; i < numFaces; i ++){
+                glUniform4f(varyingColorLoc, rValue[i], gValue[i], bValue[i], 1.0f); // pass color into fragment shader
+                glDrawArrays(GL_TRIANGLES, i * 3, 3);
+            }
+        } else
+        if (displayMode == MODE_LINE){
+            glUniform4f(varyingColorLoc, rTimeVarying, gTimeVarying, bTimeVarying, 1.0f); // time varying color
+            glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
             glDrawArrays(GL_TRIANGLES, 0, numFaces * 3);
+        } else
+        if (displayMode == MODE_POINT){
+            glUniform4f(varyingColorLoc, rTimeVarying, gTimeVarying, bTimeVarying, 1.0f);
+            glPolygonMode(GL_FRONT_AND_BACK, GL_POINT);
+            glDrawArrays(GL_TRIANGLES, 0, numFaces * 3);
+        } else
+        if (displayMode == MODE_FILL_AND_LINE){
+            glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+            glDrawArrays(GL_TRIANGLES, 0, numFaces * 3);
+            glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+            for (int i = 0; i < numFaces; i ++){
+                glUniform4f(varyingColorLoc, rValue[i], gValue[i], bValue[i], 1.0f);
+                glDrawArrays(GL_TRIANGLES, i * 3, 3);
+            }
         }
-        glBindVertexArray(0);
-        
+
+        glBindVertexArray(0); // unbind
         // Swap the screen buffers
         glfwSwapBuffers(window);
     }
@@ -237,18 +227,91 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
     }
 }
 
-void do_movement()
+void do_movement(glm::mat4 &model) // absolute coordinates here, better change to rotation around local coordinates
 {
-    // Camera controls
-    GLfloat cameraSpeed = 5.0f * deltaTime;
-    if (keys[GLFW_KEY_W])
-        camera.ProcessKeyboard(FORWARD, deltaTime);
-    if (keys[GLFW_KEY_S])
-        camera.ProcessKeyboard(BACKWARD, deltaTime);
+    // object rotation
+    GLfloat angle = 50.0f * deltaTime;
+    GLfloat coord = 1.0f * deltaTime;
+    if (keys[GLFW_KEY_UP])
+        model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.0f, 0.0f));
+    if (keys[GLFW_KEY_DOWN])
+        model = glm::rotate(model, glm::radians(angle), glm::vec3(-1.0f, 0.0f, 0.0f));
+    if (keys[GLFW_KEY_LEFT])
+        model = glm::rotate(model, glm::radians(angle), glm::vec3(0.0f, 0.0f, 1.0f));
+    if (keys[GLFW_KEY_RIGHT])
+        model = glm::rotate(model, glm::radians(angle), glm::vec3(0.0f, 0.0f, -1.0f));
+    if (keys[GLFW_KEY_N])
+        model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 1.0f, 0.0f));
+    if (keys[GLFW_KEY_M])
+        model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, -1.0f, 0.0f));
+
     if (keys[GLFW_KEY_A])
-        camera.ProcessKeyboard(LEFT, deltaTime);
+        model = glm::translate(model, glm::vec3(coord,  0.0f,  0.0f));
     if (keys[GLFW_KEY_D])
-        camera.ProcessKeyboard(RIGHT, deltaTime);
+        model = glm::translate(model, glm::vec3(-coord,  0.0f,  0.0f));
+    if (keys[GLFW_KEY_W])
+        model = glm::translate(model, glm::vec3(0.0f,  coord,  0.0f));
+    if (keys[GLFW_KEY_S])
+        model = glm::translate(model, glm::vec3(0.0f,  -coord,  0.0f));
+    if (keys[GLFW_KEY_Z])
+        model = glm::translate(model, glm::vec3(0.0f,  0.0f,  coord));
+    if (keys[GLFW_KEY_X])
+        model = glm::translate(model, glm::vec3(0.0f,  0.0f,  -coord));
+}
+
+void do_colorVarying(GLfloat &rTimeVarying, GLfloat &gTimeVarying, GLfloat &bTimeVarying, 
+                     GLfloat &rLastTime, GLfloat &rTotalTime, GLfloat &gLastTime, GLfloat &gTotalTime, 
+                     GLfloat &bLastTime, GLfloat &bTotalTime, bool &rInProcess, bool &gInProcess, bool &bInProcess){
+    GLfloat currentTime = glfwGetTime();
+    if (keys[GLFW_KEY_R]){
+        if (rInProcess)
+            rTotalTime += currentTime - rLastTime;
+        else
+            rInProcess = true;
+        rLastTime = currentTime;
+        rTimeVarying = 0.5 + 0.5 * sin(rTotalTime);
+    } 
+    else{
+        rInProcess = false;
+    }
+
+    if (keys[GLFW_KEY_G]){
+        if (gInProcess)
+            gTotalTime += currentTime - gLastTime;
+        else
+            gInProcess = true;
+        gLastTime = currentTime;
+        gTimeVarying = 0.5 + 0.5 * sin(gTotalTime);
+    } 
+    else{
+        gInProcess = false;
+    }
+
+    if (keys[GLFW_KEY_B]){
+        if (bInProcess)
+            bTotalTime += currentTime - bLastTime;
+        else
+            bInProcess = true;
+        bLastTime = currentTime;
+        bTimeVarying = 0.5 + 0.5 * sin(bTotalTime);
+    } 
+    else{
+        bInProcess = false;
+    }
+}
+
+void setDisplayMode(GLint &mode){
+    if (keys[GLFW_KEY_F])
+        mode = MODE_FILL;
+    else
+        if (keys[GLFW_KEY_L]) 
+            mode = MODE_LINE;
+    else
+        if (keys[GLFW_KEY_P]) 
+            mode = MODE_POINT;
+    else
+        if (keys[GLFW_KEY_O])
+            mode = MODE_FILL_AND_LINE;
 }
 
 void mouse_callback(GLFWwindow* window, double xpos, double ypos)

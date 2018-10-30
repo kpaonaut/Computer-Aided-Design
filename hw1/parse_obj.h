@@ -82,9 +82,9 @@ GLfloat* readObjFile(char* filename, int &numFaces){
         verticesReordered[i * 15 + 14] = 1.0f; //
 
         // printf("%d %d %d\n", pt1, pt2, pt3);
-        printf("%f %f %f %f %f\n", verticesReordered[i * 15], verticesReordered[i * 15 + 1], verticesReordered[i * 15 + 2], verticesReordered[i * 15 + 3], verticesReordered[i * 15 + 4]);
-        printf("%f %f %f %f %f\n", verticesReordered[i * 15 + 5], verticesReordered[i * 15 + 6], verticesReordered[i * 15 + 7], verticesReordered[i * 15 + 8], verticesReordered[i * 15 + 9]);
-        printf("%f %f %f %f %f\n", verticesReordered[i * 15 + 10], verticesReordered[i * 15 + 11], verticesReordered[i * 15 + 12], verticesReordered[i * 15 + 13], verticesReordered[i * 15 + 14]);
+        // printf("%f %f %f %f %f\n", verticesReordered[i * 15], verticesReordered[i * 15 + 1], verticesReordered[i * 15 + 2], verticesReordered[i * 15 + 3], verticesReordered[i * 15 + 4]);
+        // printf("%f %f %f %f %f\n", verticesReordered[i * 15 + 5], verticesReordered[i * 15 + 6], verticesReordered[i * 15 + 7], verticesReordered[i * 15 + 8], verticesReordered[i * 15 + 9]);
+        // printf("%f %f %f %f %f\n", verticesReordered[i * 15 + 10], verticesReordered[i * 15 + 11], verticesReordered[i * 15 + 12], verticesReordered[i * 15 + 13], verticesReordered[i * 15 + 14]);
     }
     //printf("%d\n", numFaces);
 

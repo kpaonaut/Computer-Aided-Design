@@ -15,7 +15,9 @@ enum Camera_Movement {
     FORWARD,
     BACKWARD,
     LEFT,
-    RIGHT
+    RIGHT,
+    UP,
+    DOWN
 };
 
 // Default camera values
@@ -81,6 +83,10 @@ public:
             this->Position -= this->Right * velocity;
         if (direction == RIGHT)
             this->Position += this->Right * velocity;
+        if (direction == UP)
+            this->Position += this->Up * velocity;
+        if (direction == DOWN)
+            this->Position -= this->Up * velocity;
     }
 
     // Processes input received from a mouse input system. Expects the offset value in both the x and y direction.
@@ -128,6 +134,6 @@ private:
         this->Front = glm::normalize(front);
         // Also re-calculate the Right and Up vector
         this->Right = glm::normalize(glm::cross(this->Front, this->WorldUp));  // Normalize the vectors, because their length gets closer to 0 the more you look up or down which results in slower movement.
-        this->Up    = glm::normalize(glm::cross(this->Right, this->Front));
+        this->Up = glm::normalize(glm::cross(this->Right, this->Front));
     }
 };
