@@ -19,29 +19,27 @@
 // Other Libs
 #include "../SOIL.h"
 
+#include "stars.h"
+
 // Properties
 GLuint WIDTH = 800, HEIGHT = 600;
 
 // Function prototypes
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
-GLuint loadTexture(GLchar* path, GLboolean alpha = false);
+void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode);
+GLuint loadTexture(GLchar* path, GLboolean alpha = true);
 
 // Camera
 Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
 bool keys[1024];
-GLfloat lastX = 400, lastY = 300;
-bool firstMouse = true;
-
-GLfloat deltaTime = 0.0f;
-GLfloat lastFrame = 0.0f;
 
 // The MAIN function, from here we start our application and run our Game loop
 int main()
 {
     // Init GLFW
     glfwInit();
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 #ifdef __APPLE__
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
@@ -50,115 +48,38 @@ int main()
     GLFWwindow* window = glfwCreateWindow(WIDTH, HEIGHT, "Blending1", nullptr, nullptr); // Windowed
     glfwMakeContextCurrent(window);
     
-    // Set the required callback functions
+    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
     glfwSetKeyCallback(window, key_callback);
-    glfwSetCursorPosCallback(window, mouse_callback);
-    glfwSetScrollCallback(window, scroll_callback);
-    
+
     // Options
-    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    // glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     
     // Initialize GLAD to setup the OpenGL Function pointers
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
         std::cout << "Failed to initialize GLAD" << std::endl;
         return -1;
     }
-    
+
     // Setup some OpenGL options
-    glEnable(GL_DEPTH_TEST);
+    // glEnable(GL_DEPTH_TEST);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_COLOR);
     
     // Setup and compile our shaders
     Shader shader("main.vert.glsl", "main.frag.glsl");
     
     // Set the object data (buffers, vertex attributes)
-    GLfloat cubeVertices[] = {
-        // Positions          // Texture Coords
-        -0.5f, -0.5f, -0.5f,  0.0f,  0.0f,
-        0.5f, -0.5f, -0.5f,  1.0f,  0.0f,
-        0.5f,  0.5f, -0.5f,  1.0f,  1.0f,
-        0.5f,  0.5f, -0.5f,  1.0f,  1.0f,
-        -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,
-        -0.5f, -0.5f, -0.5f,  0.0f,  0.0f,
-        
-        -0.5f, -0.5f,  0.5f,  0.0f,  0.0f,
-        0.5f, -0.5f,  0.5f,  1.0f,  0.0f,
-        0.5f,  0.5f,  0.5f,  1.0f,  1.0f,
-        0.5f,  0.5f,  0.5f,  1.0f,  1.0f,
-        -0.5f,  0.5f,  0.5f,  0.0f,  1.0f,
-        -0.5f, -0.5f,  0.5f,  0.0f,  0.0f,
-        
-        -0.5f,  0.5f,  0.5f,  1.0f,  0.0f,
-        -0.5f,  0.5f, -0.5f,  1.0f,  1.0f,
-        -0.5f, -0.5f, -0.5f,  0.0f,  1.0f,
-        -0.5f, -0.5f, -0.5f,  0.0f,  1.0f,
-        -0.5f, -0.5f,  0.5f,  0.0f,  0.0f,
-        -0.5f,  0.5f,  0.5f,  1.0f,  0.0f,
-        
-        0.5f,  0.5f,  0.5f,  1.0f,  0.0f,
-        0.5f,  0.5f, -0.5f,  1.0f,  1.0f,
-        0.5f, -0.5f, -0.5f,  0.0f,  1.0f,
-        0.5f, -0.5f, -0.5f,  0.0f,  1.0f,
-        0.5f, -0.5f,  0.5f,  0.0f,  0.0f,
-        0.5f,  0.5f,  0.5f,  1.0f,  0.0f,
-        
-        -0.5f, -0.5f, -0.5f,  0.0f,  1.0f,
-        0.5f, -0.5f, -0.5f,  1.0f,  1.0f,
-        0.5f, -0.5f,  0.5f,  1.0f,  0.0f,
-        0.5f, -0.5f,  0.5f,  1.0f,  0.0f,
-        -0.5f, -0.5f,  0.5f,  0.0f,  0.0f,
-        -0.5f, -0.5f, -0.5f,  0.0f,  1.0f,
-        
-        -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,
-        0.5f,  0.5f, -0.5f,  1.0f,  1.0f,
-        0.5f,  0.5f,  0.5f,  1.0f,  0.0f,
-        0.5f,  0.5f,  0.5f,  1.0f,  0.0f,
-        -0.5f,  0.5f,  0.5f,  0.0f,  0.0f,
-        -0.5f,  0.5f, -0.5f,  0.0f,  1.0f
-    };
-    GLfloat planeVertices[] = {
-        // Positions          // Texture Coords (note we set these higher than 1 that together with GL_REPEAT as texture wrapping mode will cause the floor texture to repeat)
-        5.0f, -0.5f,  5.0f,  2.0f,  0.0f,
-        -5.0f, -0.5f,  5.0f,  0.0f,  0.0f,
-        -5.0f, -0.5f, -5.0f,  0.0f,  2.0f,
-        
-        5.0f, -0.5f,  5.0f,  2.0f,  0.0f,
-        -5.0f, -0.5f, -5.0f,  0.0f,  2.0f,
-        5.0f, -0.5f, -5.0f,  2.0f,  2.0f
-    };
+    GLfloat edgeLength = 0.07f;
     GLfloat transparentVertices[] = {
-        // Positions         // Texture Coords
-        0.0f,  0.5f,  0.0f,  0.0f,  1.0f,
-        0.0f, -0.5f,  0.0f,  0.0f,  0.0f,
-        1.0f, -0.5f,  0.0f,  1.0f,  0.0f,
+        // Positions                          // Texture Coords
+        0.0f,  edgeLength,  0.0f,             0.0f,  1.0f,
+        0.0f, -edgeLength,  0.0f,             0.0f,  0.0f,
+        edgeLength * 2, -edgeLength,  0.0f,   1.0f,  0.0f,
         
-        0.0f,  0.5f,  0.0f,  0.0f,  1.0f,
-        1.0f, -0.5f,  0.0f,  1.0f,  0.0f,
-        1.0f,  0.5f,  0.0f,  1.0f,  1.0f
+        0.0f,  edgeLength,  0.0f,             0.0f,  1.0f,
+        edgeLength * 2, -edgeLength,  0.0f,   1.0f,  0.0f,
+        edgeLength * 2,  edgeLength,  0.0f,   1.0f,  1.0f
     };
-    // Setup cube VAO
-    GLuint cubeVAO, cubeVBO;
-    glGenVertexArrays(1, &cubeVAO);
-    glGenBuffers(1, &cubeVBO);
-    glBindVertexArray(cubeVAO);
-    glBindBuffer(GL_ARRAY_BUFFER, cubeVBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(cubeVertices), &cubeVertices, GL_STATIC_DRAW);
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (GLvoid*)0);
-    glEnableVertexAttribArray(1);
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
-    glBindVertexArray(0);
-    // Setup plane VAO
-    GLuint planeVAO, planeVBO;
-    glGenVertexArrays(1, &planeVAO);
-    glGenBuffers(1, &planeVBO);
-    glBindVertexArray(planeVAO);
-    glBindBuffer(GL_ARRAY_BUFFER, planeVBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(planeVertices), &planeVertices, GL_STATIC_DRAW);
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (GLvoid*)0);
-    glEnableVertexAttribArray(1);
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
-    glBindVertexArray(0);
     // Setup transparent plane VAO
     GLuint transparentVAO, transparentVBO;
     glGenVertexArrays(1, &transparentVAO);
@@ -173,31 +94,49 @@ int main()
     glBindVertexArray(0);
     
     // Load textures
-    GLuint cubeTexture = loadTexture("marble.jpg");
-    GLuint floorTexture = loadTexture("metal.png");
-    GLuint transparentTexture = loadTexture("grass.png", true);
+    GLuint transparentTexture = loadTexture("Star.bmp", true);
+
+    Stars elements = Stars(); // instantiate stars
     
-    std::vector<glm::vec3> vegetation;
-    vegetation.push_back(glm::vec3(-1.5f,  0.0f, -0.48f));
-    vegetation.push_back(glm::vec3( 1.5f,  0.0f,  0.51f));
-    vegetation.push_back(glm::vec3( 0.0f,  0.0f,  0.7f));
-    vegetation.push_back(glm::vec3(-0.3f,  0.0f, -2.3f));
-    vegetation.push_back(glm::vec3( 0.5f,  0.0f, -0.6f));
-    
+    // color init
+    glm::vec3 color[16];
+    for (GLint i = 0; i < 5; i++) {
+        color[i].r = 1.0f;
+        color[i].g = i * 0.2f;
+        color[i].b = 0.0f;
+    }
+    for (GLint i = 5; i < 10; i++) {
+        color[i].r = 1.0f - (i - 4)*0.2f;
+        color[i].g = 1.0f;
+        color[i].b = 0.0f;
+    }
+    for (GLint i = 10; i < 16; i++) {
+        color[i].r = (i - 10) * 0.2f;
+        color[i].g = 1.0f - (i - 10)*0.2f;
+        color[i].b = 1.0f;
+    }
+
     // Game loop
+    GLfloat deltaSpawnTime, lastFrame, deltaTime;
+    GLfloat currentFrame = glfwGetTime();
+    GLfloat lastSpawnTime = currentFrame;
     while (!glfwWindowShouldClose(window))
     {
         // Set frame time
-        GLfloat currentFrame = glfwGetTime();
+        currentFrame = glfwGetTime();
         deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;
-        
-        // Check and call events
+        elements.update(deltaTime);
+        deltaSpawnTime = currentFrame - lastSpawnTime;
+        if (deltaSpawnTime > 0.1) {
+            elements.spawn();
+            lastSpawnTime = currentFrame;
+        }
+
         glfwPollEvents();
-        Do_Movement();
         
         // Clear the colorbuffer
-        glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         
         // Draw objects
@@ -207,34 +146,21 @@ int main()
         glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)WIDTH / (float)HEIGHT, 0.1f, 100.0f);
         glUniformMatrix4fv(glGetUniformLocation(shader.Program, "view"), 1, GL_FALSE, glm::value_ptr(view));
         glUniformMatrix4fv(glGetUniformLocation(shader.Program, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
-        // Cubes (Draw 2 cubes)
-        glBindVertexArray(cubeVAO);
-        glBindTexture(GL_TEXTURE_2D, cubeTexture);  // We omit the glActiveTexture part since TEXTURE0 is already the default active texture unit. (a single sampler used in fragment is set to 0 as well by default)
-        model = glm::translate(model, glm::vec3(-1.0f, 0.0f, -1.0f));
-        glUniformMatrix4fv(glGetUniformLocation(shader.Program, "model"), 1, GL_FALSE, glm::value_ptr(model));
-        glDrawArrays(GL_TRIANGLES, 0, 36);
-        model = glm::mat4(1);
-        model = glm::translate(model, glm::vec3(2.0f, 0.0f, 0.0f));
-        glUniformMatrix4fv(glGetUniformLocation(shader.Program, "model"), 1, GL_FALSE, glm::value_ptr(model));
-        glDrawArrays(GL_TRIANGLES, 0, 36);
-        // Floor
-        glBindVertexArray(planeVAO);
-        glBindTexture(GL_TEXTURE_2D, floorTexture);
-        model = glm::mat4(1);
-        glUniformMatrix4fv(glGetUniformLocation(shader.Program, "model"), 1, GL_FALSE, glm::value_ptr(model));
-        glDrawArrays(GL_TRIANGLES, 0, 6);
-        // Vegetation (Draw 5 vegetations)
+        // draw all elements
         glBindVertexArray(transparentVAO);
         glBindTexture(GL_TEXTURE_2D, transparentTexture);
-        for (GLuint i = 0; i < vegetation.size(); i++)
+        for (GLuint i = 0; i < elements.starCoordinates.size(); i++)
         {
+            GLint varyingColorLoc = glGetUniformLocation(shader.Program, "varyingColor");
+            GLint index = elements.colorIndex[i];
+            //std::cout << color[index].r <<" "<< color[index].g <<" "<< color[index].b << std::endl;
+            glUniform4f(varyingColorLoc, color[index].r, color[index].g, color[index].b, 1.0f); // pass color into fragment shader
             model = glm::mat4(1);
-            model = glm::translate(model, vegetation[i]);
+            model = glm::translate(model, elements.starCoordinates[i]);
             glUniformMatrix4fv(glGetUniformLocation(shader.Program, "model"), 1, GL_FALSE, glm::value_ptr(model));
             glDrawArrays(GL_TRIANGLES, 0, 6);
         }
         glBindVertexArray(0);
-        
         
         // Swap the buffers
         glfwSwapBuffers(window);
@@ -275,4 +201,18 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
     WIDTH = width;
     HEIGHT = height;
     glViewport(0, 0, width, height);
+}
+
+// Is called whenever a key is pressed/released via GLFW
+void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode)
+{
+    if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
+        glfwSetWindowShouldClose(window, GL_TRUE);
+    if (key >= 0 && key < 1024)
+    {
+        if (action == GLFW_PRESS)
+            keys[key] = true;
+        else if (action == GLFW_RELEASE)
+            keys[key] = false;
+    }
 }

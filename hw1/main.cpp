@@ -126,7 +126,7 @@ int main()
     GLint displayMode = MODE_FILL; // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
     /****************************************************/
-    // Game loop     
+    // Game loop  
     while (!glfwWindowShouldClose(window))
     {
         // Calculate deltatime of current frame
@@ -143,6 +143,7 @@ int main()
         // Clear the colorbuffer
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); 
+        
         // Activate shader
         ourShader.Use();
         // Camera/View transformation
