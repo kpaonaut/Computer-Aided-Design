@@ -20,7 +20,8 @@ Things to notice:
 * Input picture is black backgrounded. Need to convert the black background to transparency. This is called *BLENDING*. The proper way to blending here is ~~~
 glEnable(GL_BLEND);
 glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_COLOR);
-~~~ So that when source color is black `(0.0, 0.0, 0.0)`, the blending result is the destination color.
+~~~
+So that when source color is black `(0.0, 0.0, 0.0)`, the blending result is the destination color.
 * Stars vanish at the edge of a circle. Delete the elements in a vector when they go beyond the circle.
 * Stars' colors are different from the original white. Use a multiplication is fragment shader to combine color with texture. Since texture color is white `(1.0, 1.0, 1.0)`, the final result will adopt the chosen color instead of white.
 
