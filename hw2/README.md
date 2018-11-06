@@ -17,7 +17,8 @@ This project takes in the picture `Star.bmp` as input, and creates a animation w
 
 Things to notice:
 
-* Input picture is black backgrounded. Need to convert the black background to transparency. This is called *BLENDING*. The proper way to blending here is ~~~
+* Input picture is black backgrounded. Need to convert the black background to transparency. This is called *BLENDING*. The proper way to blending here is
+* ~~~
 glEnable(GL_BLEND);
 glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_COLOR);
 ~~~
