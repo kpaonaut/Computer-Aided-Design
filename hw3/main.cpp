@@ -116,7 +116,7 @@ int main()
     glBindVertexArray(0);
     
     // Load textures
-    GLuint transparentTexture = loadTexture("snow2.png", true);
+    GLuint transparentTexture = loadTexture("snow.png", true);
     GLuint bgTexture = loadTexture("bg2.JPG", true);
 
     std::vector<Particle> particles;
@@ -146,9 +146,9 @@ int main()
         // generate more snow
         deltaSpawnTime = currentFrame - lastSpawnTime;
         if (deltaSpawnTime > spawnThreshold) {
-            glm::vec3 initV((random() % 20) / 10.0 - 1.0, (random() % 20) / 10.0 - 1.0, 0); // speed between -1 and 1
+            glm::vec3 initV(0, (random() % 20) / 10.0 - 1.0, 0); // speed between -1 and 1
             GLfloat z = - (random() % 100) / 10.0; // 0 ~ -10
-            glm::vec3 initPos((random() % 20) / 10.0 - 1.0, 1.0 - 0.414 * z, z); // start from the top in FoV
+            glm::vec3 initPos((1.0 - 0.414 * z) * AR * ((random() % 20) / 10.0 - 1.0), 1.0 - 0.414 * z, z); // start from the top in FoV
             particles.push_back(Particle(0.01, initV, initPos));
             lastSpawnTime = currentFrame;
             if (spawnThreshold > 0.2) {
@@ -181,7 +181,8 @@ int main()
         glDrawArrays(GL_TRIANGLES, 6, 6);
 
         glEnable(GL_BLEND);
-        glBlendFunc(GL_ONE_MINUS_SRC_COLOR, GL_SRC_COLOR); // set white area as transparent
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // set white area as transparent
+
         glBindTexture(GL_TEXTURE_2D, transparentTexture);
         for (GLuint i = 0; i < particles.size(); i++)
         {

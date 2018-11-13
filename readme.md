@@ -26,3 +26,9 @@ R, G, B represent red, green, and blue elements in the color, respectively. When
 ![](hw2/effect.gif)
 
 This project displays an Archimedes' Screw. See folder `hw2` for details.
+
+## Third Project
+
+![](hw3/effect.gif)
+
+This project draws snow flakes with particle system.
