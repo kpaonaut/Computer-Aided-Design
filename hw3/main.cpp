@@ -32,7 +32,7 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 GLuint loadTexture(GLchar* path, GLboolean alpha = true);
 
 // Camera
-Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
+Camera camera(glm::vec3(0.0f, 0.0f, 2.41f));
 bool keys[1024];
 
 // The MAIN function, from here we start our application and run our Game loop
@@ -64,15 +64,16 @@ int main()
 
     // Setup some OpenGL options
     // glEnable(GL_DEPTH_TEST);
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_ONE_MINUS_SRC_COLOR, GL_SRC_COLOR); // set white area as transparent
+    // glEnable(GL_BLEND);
+    // glBlendFunc(GL_ONE_MINUS_SRC_COLOR, GL_SRC_COLOR); // set white area as transparent
     
     // Setup and compile our shaders
     Shader shader("main.vert.glsl", "main.frag.glsl");
     
     // Set the object data (buffers, vertex attributes)
-    GLfloat edgeLength = 0.2f;
+    GLfloat edgeLength = 0.1f, bgEdgeLength = 1.0f, AR = 1.333f; // AR: aspect ratio
     GLfloat transparentVertices[] = {
+        // for snow particles
         // Positions                          // Texture Coords
         0.0f,  edgeLength,  0.0f,             0.0f,  1.0f,
         0.0f, -edgeLength,  0.0f,             0.0f,  0.0f,
@@ -80,8 +81,27 @@ int main()
         
         0.0f,  edgeLength,  0.0f,             0.0f,  1.0f,
         edgeLength * 2, -edgeLength,  0.0f,   1.0f,  0.0f,
-        edgeLength * 2,  edgeLength,  0.0f,   1.0f,  1.0f
+        edgeLength * 2,  edgeLength,  0.0f,   1.0f,  1.0f,
+
+
+        // for background
+        // Positions                          // Texture Coords
+        // 0.0f,  bgEdgeLength,  0.0f,             0.0f,  1.0f,
+        // 0.0f, -bgEdgeLength,  0.0f,             0.0f,  0.0f,
+        // bgEdgeLength * 2, -bgEdgeLength,  0.0f,   1.0f,  0.0f,
+        
+        // 0.0f,  bgEdgeLength,  0.0f,             0.0f,  1.0f,
+        // bgEdgeLength * 2, -bgEdgeLength,  0.0f,   1.0f,  0.0f,
+        // bgEdgeLength * 2,  bgEdgeLength,  0.0f,   1.0f,  1.0f
+        AR * -bgEdgeLength, bgEdgeLength,  0.0f,     0.0f,  1.0f,
+        AR * -bgEdgeLength, -bgEdgeLength,  0.0f,    0.0f,  0.0f,
+        AR * bgEdgeLength, -bgEdgeLength,  0.0f,     1.0f,  0.0f,
+        
+        AR * -bgEdgeLength,  bgEdgeLength,  0.0f,    0.0f,  1.0f,
+        AR * bgEdgeLength, -bgEdgeLength,  0.0f,     1.0f,  0.0f,
+        AR * bgEdgeLength,  bgEdgeLength,  0.0f,     1.0f,  1.0f
     };
+
     // Setup transparent plane VAO
     GLuint transparentVAO, transparentVBO;
     glGenVertexArrays(1, &transparentVAO);
@@ -97,8 +117,9 @@ int main()
     
     // Load textures
     GLuint transparentTexture = loadTexture("snow2.png", true);
+    GLuint bgTexture = loadTexture("bg2.JPG", true);
 
-    vector<Particle> particles;
+    std::vector<Particle> particles;
 
     // random seed for velocity and position spawn
     srand(time(NULL));
@@ -106,7 +127,7 @@ int main()
     GLfloat deltaSpawnTime, lastFrame, deltaTime;
     GLfloat currentFrame = glfwGetTime();
     GLfloat lastSpawnTime = currentFrame;
-    GLfloat spawnThreshold = 1.0;
+    GLfloat spawnThreshold = 0.5;
     while (!glfwWindowShouldClose(window))
     {
         // Set frame time
@@ -117,7 +138,7 @@ int main()
         // update positions
         for (GLint i = 0; i < particles.size(); i++) {
             particles[i].update(deltaTime);
-            if (particles[i].getPosition().g < -0.5) { // if the particle goes out of view!
+            if (particles[i].getPosition().g < -1.0) { // if the particle goes out of view!
                 particles.erase(particles.begin() + i);
             }
         }
@@ -125,10 +146,14 @@ int main()
         // generate more snow
         deltaSpawnTime = currentFrame - lastSpawnTime;
         if (deltaSpawnTime > spawnThreshold) {
-            vec3 initV((random() % 10) / 10.0, (random() % 10) / 10.0, 0); // speed between 0 and 1.0
-            vec3 initPos((random() % 10) / 10.0, 0.0, (random() % 100) / 10.0);
+            glm::vec3 initV((random() % 20) / 10.0 - 1.0, (random() % 20) / 10.0 - 1.0, 0); // speed between -1 and 1
+            GLfloat z = - (random() % 100) / 10.0; // 0 ~ -10
+            glm::vec3 initPos((random() % 20) / 10.0 - 1.0, 1.0 - 0.414 * z, z); // start from the top in FoV
             particles.push_back(Particle(0.01, initV, initPos));
             lastSpawnTime = currentFrame;
+            if (spawnThreshold > 0.2) {
+                spawnThreshold -= 0.01;
+            }
         }
 
         glfwPollEvents();
@@ -141,16 +166,26 @@ int main()
         // camera configs
         shader.Use();
         glm::mat4 view = camera.GetViewMatrix();
-        glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)WIDTH / (float)HEIGHT, 0.1f, 100.0f);
+        glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)WIDTH / (float)HEIGHT, 0.0f, 100.0f);
         glUniformMatrix4fv(glGetUniformLocation(shader.Program, "view"), 1, GL_FALSE, glm::value_ptr(view));
         glUniformMatrix4fv(glGetUniformLocation(shader.Program, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
         
         // draw all elements
         glBindVertexArray(transparentVAO);
+        // draw background
+        glDisable(GL_BLEND);
+        glBindTexture(GL_TEXTURE_2D, bgTexture);
+        glm::mat4 model(1);
+        //model = glm::translate(model, glm::vec3(-1.0, 0.0, 0.0));
+        glUniformMatrix4fv(glGetUniformLocation(shader.Program, "model"), 1, GL_FALSE, glm::value_ptr(model));
+        glDrawArrays(GL_TRIANGLES, 6, 6);
+
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_ONE_MINUS_SRC_COLOR, GL_SRC_COLOR); // set white area as transparent
         glBindTexture(GL_TEXTURE_2D, transparentTexture);
         for (GLuint i = 0; i < particles.size(); i++)
         {
-            model = glm::mat4(1);
+            glm::mat4 model(1);
             model = glm::translate(model, particles[i].getPosition());
             glUniformMatrix4fv(glGetUniformLocation(shader.Program, "model"), 1, GL_FALSE, glm::value_ptr(model));
             glDrawArrays(GL_TRIANGLES, 0, 6);
