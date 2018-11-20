@@ -29,7 +29,7 @@ void do_movement();
 GLuint WIDTH = 800, HEIGHT = 600;
 
 // Camera
-Camera camera(glm::vec3(-100.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+Camera camera(glm::vec3(-200.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 bool keys[1024];
 GLfloat lastX = 400, lastY = 300;
 bool firstMouse = true;
@@ -82,15 +82,15 @@ int main()
     MOON: 3474 km
     */
     Body sun = Body(13.91016, 1000, 0, "sun");
-    Body mercury = Body(4.879, 18.0, 10.9, "mercury");
-    Body venus = Body(1.2104, 1082, 1.496, "earth");
-    Body earth = Body(0.12756, 1496, 1.496, "earth");
-    Body moon = Body(0.03475, 36.52, 1.496, "earth");
-    Body mars = Body(0.06792, 36.52, 1.496, "earth");
-    Body jupiter = Body(1.42984, 36.52, 1.496, "earth");
-    Body saturn = Body(1.20536, 36.52, 1.496, "earth");
-    Body uranus = Body(0.51118, 36.52, 1.496, "earth");
-    Body neptune = Body(0.12756, 36.52, 1.496, "earth");
+    Body mercury = Body(1.0, 8.8, 10, "mercury");
+    Body venus = Body(0.5, 22.47, 20, "venus");
+    Body earth = Body(1.0, 36.52, 30, "earth");
+    Body moon = Body(0.5, 2.73, 1.0, "moon");
+    Body mars = Body(0.8, 68.7, 40, "mars");
+    Body jupiter = Body(3, 43, 60, "jupiter");
+    Body saturn = Body(2, 107, 100, "saturn");
+    Body uranus = Body(1, 305, 200, "uranus");
+    Body neptune = Body(1, 598, 400, "neptune");
 
     /****************************************************/
     // Game loop
@@ -101,6 +101,15 @@ int main()
         deltaTime = currentFrame - lastFrame;
         // sun.update(deltaTime);
         mercury.update(deltaTime);
+        venus.update(deltaTime);
+        earth.update(deltaTime);
+        moon.update(deltaTime);
+        mars.update(deltaTime);
+        jupiter.update(deltaTime);
+        saturn.update(deltaTime);
+        uranus.update(deltaTime);
+        neptune.update(deltaTime);
+
         lastFrame = currentFrame;
         // Check if any events have been activiated (key pressed, mouse moved etc.) and call corresponding response functions
         glfwPollEvents();
@@ -118,7 +127,7 @@ int main()
         glm::mat4 view(1);
         view = camera.GetViewMatrix();
         glm::mat4 projection(1);
-        projection = glm::perspective(glm::radians(camera.Zoom), (GLfloat)WIDTH / (GLfloat)HEIGHT, 0.1f, 1000.0f);
+        projection = glm::perspective(glm::radians(camera.Zoom), (GLfloat)WIDTH / (GLfloat)HEIGHT, 0.1f, 2000.0f);
         // Get the uniform locations
         GLint viewLoc = glGetUniformLocation(ourShader.Program, "view");
         GLint projLoc = glGetUniformLocation(ourShader.Program, "projection");
@@ -130,6 +139,14 @@ int main()
 
         sun.draw(ourShader);
         mercury.draw(ourShader);
+        venus.draw(ourShader);
+        earth.draw(ourShader);
+        moon.draw(ourShader, &earth);
+        mars.draw(ourShader);
+        jupiter.draw(ourShader);
+        saturn.draw(ourShader);
+        uranus.draw(ourShader);
+        neptune.draw(ourShader);
 
         // Swap the screen buffers
         glfwSwapBuffers(window);
