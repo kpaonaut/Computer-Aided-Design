@@ -18,13 +18,17 @@ MOON: 3474 km    27.0 days
 #include "../SOIL.h"
 
 #include "shader.h"
+#include "text.h"
 
 #include <string>
 #include <cstdio>
 #include <iostream>
 
+//#include "../freetype/ft2build.h"
+//#include FT_FREETYPE_H
+
 #define PI 3.1416
-#define numResoltion 20 // how many segments are latitude and longitude divided into
+#define SEGMENT_NUM 20 // how many segments are latitude and longitude divided into
 
 class Body { // planets and the sun
 private:
@@ -34,6 +38,7 @@ private:
   GLfloat* vertices;
   GLuint numVertices, numIndices, numTriangles, texture;
   GLuint VBO, VAO, EBO;
+  GLuint textVAO, textVBO;
 
 public:
   Body(GLfloat diameter, GLfloat period, GLfloat orbitRadius, std::string nameValue);
@@ -43,6 +48,7 @@ public:
   void draw(Shader &ourShader, Body* base);
   void generateMesh();
   GLuint loadTexture(GLchar* path);
+  void drawText(Shader &shader, Body* base);
   ~Body();
 
 };
@@ -71,9 +77,16 @@ Body::~Body() {
   glDeleteVertexArrays(1, &VAO);
   glDeleteBuffers(1, &VBO);
   glDeleteBuffers(1, &EBO);
+  glDeleteVertexArrays(1, &textVAO);
+  glDeleteBuffers(1, &textVBO);
 }
 
 void Body::generateMesh() {
+  GLuint numResoltion;
+  if (name == "sun")
+    numResoltion = SEGMENT_NUM * 10;
+  else
+    numResoltion = SEGMENT_NUM;
   // divide latitude and longitude into numResoltion segments
   numTriangles = numResoltion * numResoltion * 2;
   numIndices = 3 * numTriangles;
@@ -129,20 +142,31 @@ glm::vec3 Body::getCoordinates(Body* base = NULL) {
 }
 
 void Body::allocateBuffer() {
-    glGenVertexArrays(1, &VAO);
-    glGenBuffers(1, &VBO);
-    glGenBuffers(1, &EBO);
-    glBindVertexArray(VAO);
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * numVertices, vertices, GL_STATIC_DRAW);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLuint) * numIndices, indices, GL_STATIC_DRAW);
+  // for body texture
+  glGenVertexArrays(1, &VAO);
+  glGenBuffers(1, &VBO);
+  glGenBuffers(1, &EBO);
+  glBindVertexArray(VAO);
+  glBindBuffer(GL_ARRAY_BUFFER, VBO);
+  glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * numVertices, vertices, GL_STATIC_DRAW);
+  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+  glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLuint) * numIndices, indices, GL_STATIC_DRAW);
+  glEnableVertexAttribArray(0);
+  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (GLvoid*)0);
+  glEnableVertexAttribArray(1);
+  glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
+  glBindVertexArray(0);
 
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (GLvoid*)0);
-    glEnableVertexAttribArray(1);
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
-    glBindVertexArray(0);
+  // for text texture
+  glGenVertexArrays(1, &textVAO);
+  glGenBuffers(1, &textVBO);
+  glBindVertexArray(textVAO);
+  glBindBuffer(GL_ARRAY_BUFFER, textVBO);
+  glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * 6 * 4, NULL, GL_DYNAMIC_DRAW);
+  glEnableVertexAttribArray(0);
+  glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), 0);
+  glBindBuffer(GL_ARRAY_BUFFER, 0);
+  glBindVertexArray(0);
 }
 
 void Body::draw(Shader &ourShader, Body* base = NULL) {
@@ -158,6 +182,15 @@ void Body::draw(Shader &ourShader, Body* base = NULL) {
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
   glDrawElements(GL_TRIANGLES, numIndices, GL_UNSIGNED_INT, 0); // 40 triangles, 120 vertices in total
   glBindVertexArray(0);
+}
+
+void Body::drawText(Shader &shader, Body* base = NULL) {
+  glm::mat4 model(1);
+  model = glm::translate(model, getCoordinates(base));
+  //std::cout<<getCoordinates().x<<" "<<getCoordinates().y<<" "<<getCoordinates().z<<std::endl;
+  model = glm::translate(model, glm::vec3(0, bodyRadius * 1.1, 0)); // dispostition from body center
+  glUniformMatrix4fv(glGetUniformLocation(shader.Program, "model"), 1, GL_FALSE, glm::value_ptr(model));
+  RenderText(shader, name, 0.0f, 0.0f, 0.01f, glm::vec3(0.7, 0.7f, 0.1f), textVAO, textVBO);
 }
 
 GLuint Body::loadTexture(GLchar* path) {

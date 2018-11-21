@@ -17,6 +17,8 @@
 // Other includes
 #include "shader.h"
 #include "camera.h"
+#include "text.h"
+// text.h should be included before parameters.h
 #include "parameters.h"
 
 // Function declarations
@@ -69,6 +71,8 @@ int main()
 
     // Build and compile our shader program
     Shader ourShader("main.vert.glsl", "main.frag.glsl");
+    Shader textShader("text.vert.glsl", "text.frag.glsl");
+    initFreetype();
 
     /***************************************************/
     /*
@@ -94,8 +98,19 @@ int main()
 
     /****************************************************/
     // Game loop
-    while (!glfwWindowShouldClose(window))
-    {
+
+  GLuint textVAO, textVBO;
+  glGenVertexArrays(1, &textVAO);
+  glGenBuffers(1, &textVBO);
+  glBindVertexArray(textVAO);
+  glBindBuffer(GL_ARRAY_BUFFER, textVBO);
+  glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * 6 * 4, NULL, GL_DYNAMIC_DRAW);
+  glEnableVertexAttribArray(0);
+  glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), 0);
+  glBindBuffer(GL_ARRAY_BUFFER, 0);
+  glBindVertexArray(0);
+
+    while (!glfwWindowShouldClose(window)) {
         // Calculate deltatime of current frame
         GLfloat currentFrame = glfwGetTime();
         deltaTime = currentFrame - lastFrame;
@@ -121,13 +136,14 @@ int main()
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); 
         // Activate shader
         ourShader.Use();
+        //textShader.Use();
 
         // Camera/View transformation
         // Projection
         glm::mat4 view(1);
         view = camera.GetViewMatrix();
         glm::mat4 projection(1);
-        projection = glm::perspective(glm::radians(camera.Zoom), (GLfloat)WIDTH / (GLfloat)HEIGHT, 0.1f, 2000.0f);
+        projection = glm::perspective(glm::radians(camera.Zoom), (GLfloat)WIDTH / (GLfloat)HEIGHT, 0.1f, 1000.0f);
         // Get the uniform locations
         GLint viewLoc = glGetUniformLocation(ourShader.Program, "view");
         GLint projLoc = glGetUniformLocation(ourShader.Program, "projection");
@@ -147,6 +163,25 @@ int main()
         saturn.draw(ourShader);
         uranus.draw(ourShader);
         neptune.draw(ourShader);
+
+        textShader.Use();
+        // Get the uniform locations
+        viewLoc = glGetUniformLocation(textShader.Program, "view");
+        projLoc = glGetUniformLocation(textShader.Program, "projection");
+        // Pass the matrices to the text shader
+        glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
+        glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(projection));
+
+        sun.drawText(textShader);
+        mercury.drawText(textShader);
+        venus.drawText(textShader);
+        earth.drawText(textShader);
+        moon.drawText(textShader, &earth);
+        mars.drawText(textShader);
+        jupiter.drawText(textShader);
+        saturn.drawText(textShader);
+        uranus.drawText(textShader);
+        neptune.drawText(textShader);
 
         // Swap the screen buffers
         glfwSwapBuffers(window);
