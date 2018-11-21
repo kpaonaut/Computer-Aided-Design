@@ -35,6 +35,7 @@ This project draws snow flakes with particle system.
 
 ## Fourth Project
 ![](hw4/effect2.gif)
+
 (The gif is not showing text clearly due to optimization requirements for web browser downloading.)
 
 In this project, we draw a mini Solar System in 3D space with flat pictures of these celestial bodies given.
