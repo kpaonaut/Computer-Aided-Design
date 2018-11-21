@@ -33,7 +33,7 @@ This project displays an Archimedes' Screw. See folder `hw2` for details.
 
 This project draws snow flakes with particle system.
 
-# Navigating the Solar System
+## Fourth Project
 ![](hw4/effect2.gif)
 (The gif is not showing text clearly due to optimization requirements for web browser downloading.)
 
@@ -42,3 +42,10 @@ In this project, we draw a mini Solar System in 3D space with flat pictures of t
 * Each planet is rotating around the sun, the moon rotates around the earth.
 * The name of each body follows it (text).
 * We are able to navigate within this 3D space with keyboard and mouse pad.
+
+## Fifth Project
+![](hw5/effect.gif)
+
+In this project, we draw a [Bezier spline](https://en.wikipedia.org/wiki/B%C3%A9zier_curve) plane according to 25 control points.
+
+We also utilize the **tessellation** introduced by openGL V4.0+.
