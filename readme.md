@@ -32,3 +32,13 @@ This project displays an Archimedes' Screw. See folder `hw2` for details.
 ![](hw3/effect.gif)
 
 This project draws snow flakes with particle system.
+
+# Navigating the Solar System
+![](hw4/effect2.gif)
+(The gif is not showing text clearly due to optimization requirements for web browser downloading.)
+
+In this project, we draw a mini Solar System in 3D space with flat pictures of these celestial bodies given.
+
+* Each planet is rotating around the sun, the moon rotates around the earth.
+* The name of each body follows it (text).
+* We are able to navigate within this 3D space with keyboard and mouse pad.

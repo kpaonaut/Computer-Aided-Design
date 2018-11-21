@@ -1,3 +1,32 @@
+# Navigating the Solar System
+![](effect2.gif)
+(The gif is not showing text clearly due to optimization requirements for web browser downloading.)
+
+In this project, we draw a mini Solar System in 3D space with flat pictures of these celestial bodies given.
+
+* Each planet is rotating around the sun, the moon rotates around the earth.
+* The name of each body follows it (text).
+* We are able to navigate within this 3D space with keyboard and mouse pad.
+
+## Usage
+
+* under this directory, use `./a` for Mac users, or ``` g++ -I ../freetype -L/usr/local/lib -std=c++11 -stdlib=libc++ -lglfw3 -framework CoreVideo -framework OpenGL -framework IOKit -framework Cocoa -framework GLUT -o a ../libSOIL.a /usr/local/lib/libfreetype.dylib main.cpp ../glad.c``` to compile then `./a`.
+* use keyboard UP, DOWN, LEFT, RIGHT to move the camera.
+* use keyboard W, S, A, D to rotate camera.
+* use keyboard M, N to move closer/farther.
+* use mouse scroll to zoom in/out.
+
+Enjoy!
+
+## Installation of Freetype Library
+We use [freetype](https://www.freetype.org/) to render fonts.
+
+On Mac, use `brew install freetype` to install. (`homebrew` has to be installed before you install freetype, of course.)
+
+To link the program with this library, manually inlcude the `.dylib` file when invoking g++. Use the `-I ../freetype` flag, `-L/usr/local/lib`, `libfreetype.dylib` options to find the library. Under directory `../freetype`, files have to be organized like what I did in my repo.
+
+## Tricky Problems
+
 ### tricky problem with `glm::perspective`:
 
 `glm::perspective(FoV angle in radians, aspect ratio, near plane, far plane)` usage explained:
