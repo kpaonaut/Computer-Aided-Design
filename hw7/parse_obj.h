@@ -17,6 +17,14 @@
 
 #define NUM 100000 // the maximal number of vertices/faces allowed in the obj file
 
+glm::vec3 calculateNorm(GLfloat x1, GLfloat y1, GLfloat z1, GLfloat x2, GLfloat y2, GLfloat z2, GLfloat x3, GLfloat y3, GLfloat z3) {
+    glm::vec3 norm;
+    norm = glm::cross(glm::vec3(x1-x2, y1-y2, z1-z2), glm::vec3(x1-x3, y1-y3, z1-z3));
+    norm = glm::normalize(norm);
+    return norm;
+}
+
+
 GLfloat* readObjFile(char* filename, int &numFaces){
     // read file to RAM
     FILE *file = fopen(filename, "r");
@@ -57,29 +65,38 @@ GLfloat* readObjFile(char* filename, int &numFaces){
     }
 
     // rearrange vertices into verticesReordered, according to faces
-    GLfloat* verticesReordered = new GLfloat[numFaces * 15];
+    GLfloat* verticesReordered = new GLfloat[numFaces * 18];
     for (int i = 0; i < numFaces; i++){
         int pt1 = faces[i * 3] - 1;
         int pt2 = faces[i * 3 + 1] - 1;
         int pt3 = faces[i * 3 + 2] - 1; // index of the 1st point, index in file starts from 1 but index in array should start from 0!
-        
-        verticesReordered[i * 15] = vertices[pt1 * 3]; // x
-        verticesReordered[i * 15 + 1] = vertices[pt1 * 3 + 1]; // y
-        verticesReordered[i * 15 + 2] = vertices[pt1 * 3 + 2]; // z
-        verticesReordered[i * 15 + 3] = 0.0f; // texture coord
-        verticesReordered[i * 15 + 4] = 1.0f; //
+        glm::vec3 normal = calculateNorm(vertices[pt1 * 3], vertices[pt1 * 3 + 1], vertices[pt1 * 3 + 2],
+                             vertices[pt2 * 3], vertices[pt2 * 3 + 1], vertices[pt2 * 3 + 2], 
+                             vertices[pt3 * 3], vertices[pt3 * 3 + 1], vertices[pt3 * 3 + 2]);
+        GLfloat nx = normal.x;
+        GLfloat ny = normal.y;
+        GLfloat nz = normal.z;
 
-        verticesReordered[i * 15 + 5] = vertices[pt2 * 3]; // x
-        verticesReordered[i * 15 + 6] = vertices[pt2 * 3 + 1]; // y
-        verticesReordered[i * 15 + 7] = vertices[pt2 * 3 + 2]; // z
-        verticesReordered[i * 15 + 8] = 0.0f; // texture coord
-        verticesReordered[i * 15 + 9] = 1.0f; //
+        verticesReordered[i * 18] = vertices[pt1 * 3]; // x
+        verticesReordered[i * 18 + 1] = vertices[pt1 * 3 + 1]; // y
+        verticesReordered[i * 18 + 2] = vertices[pt1 * 3 + 2]; // z
+        verticesReordered[i * 18 + 3] = nx; // texture coord
+        verticesReordered[i * 18 + 4] = ny; //
+        verticesReordered[i * 18 + 5] = nz; //
 
-        verticesReordered[i * 15 + 10] = vertices[pt3 * 3]; // x
-        verticesReordered[i * 15 + 11] = vertices[pt3 * 3 + 1]; // y
-        verticesReordered[i * 15 + 12] = vertices[pt3 * 3 + 2]; // z
-        verticesReordered[i * 15 + 13] = 0.0f; // texture coord
-        verticesReordered[i * 15 + 14] = 1.0f; //
+        verticesReordered[i * 18 + 6] = vertices[pt2 * 3]; // x
+        verticesReordered[i * 18 + 7] = vertices[pt2 * 3 + 1]; // y
+        verticesReordered[i * 18 + 8] = vertices[pt2 * 3 + 2]; // z
+        verticesReordered[i * 18 + 9] = nx; // texture coord
+        verticesReordered[i * 18 + 10] = ny; //
+        verticesReordered[i * 18 + 11] = nz; //
+
+        verticesReordered[i * 18 + 12] = vertices[pt3 * 3]; // x
+        verticesReordered[i * 18 + 13] = vertices[pt3 * 3 + 1]; // y
+        verticesReordered[i * 18 + 14] = vertices[pt3 * 3 + 2]; // z
+        verticesReordered[i * 18 + 15] = nx; // texture coord
+        verticesReordered[i * 18 + 16] = ny; //
+        verticesReordered[i * 18 + 17] = nz; //
 
         // printf("%d %d %d\n", pt1, pt2, pt3);
         // printf("%f %f %f %f %f\n", verticesReordered[i * 15], verticesReordered[i * 15 + 1], verticesReordered[i * 15 + 2], verticesReordered[i * 15 + 3], verticesReordered[i * 15 + 4]);

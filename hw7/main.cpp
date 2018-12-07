@@ -76,7 +76,7 @@ int main()
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_PROGRAM_POINT_SIZE);
     // Build and compile our shader program
-    Shader ourShader("main.vert.glsl", "main.frag.glsl");
+    Shader lightingShader("lighting.vert.glsl", "lighting.frag.glsl");
 
     /***************************************************/
     GLfloat *verticesPointer;
@@ -90,10 +90,12 @@ int main()
     glGenBuffers(1, &VBO);
     glBindVertexArray(VAO);
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(*verticesPointer)*numFaces*15, verticesPointer, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(*verticesPointer)*numFaces*18, verticesPointer, GL_STATIC_DRAW);
     // Position attribute
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (GLvoid*)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (GLvoid*)0);
     glEnableVertexAttribArray(0);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
+    glEnableVertexAttribArray(1);
     glBindVertexArray(0); // Unbind VAO
     
     // initialize model attitude & position (transform)
@@ -103,19 +105,7 @@ int main()
     model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.0f, 0.0f));
 
     // light source position
-    glm::vec3 lightPos(0.8f, 1.0f, -0.2f);
-
-    // initilize color for fill mode
-    glm::vec4 varyingColor = glm::vec4(0.0f, 0.5f, 0.2f, 1.0f);
-    GLfloat *rValue = new GLfloat[numFaces];
-    GLfloat *gValue = new GLfloat[numFaces];
-    GLfloat *bValue = new GLfloat[numFaces];
-    srand((unsigned)time(0));
-    for (GLint i = 0; i < numFaces; i ++){
-        rValue[i] = (std::rand() % 100 + 0.0) / 100.0;
-        gValue[i] = (std::rand() % 100 + 0.0) / 100.0;
-        bValue[i] = (std::rand() % 100 + 0.0) / 100.0;
-    }
+    glm::vec3 lightPos(1.8f, 1.0f, -0.2f);
 
     /****************************************************/
     // Game loop  
@@ -132,10 +122,19 @@ int main()
         // Render
         // Clear the colorbuffer
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); 
-        
-        // Activate shader
-        ourShader.Use();
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+        // lighting setup
+        lightingShader.Use();
+        GLint objectColorLoc = glGetUniformLocation(lightingShader.Program, "objectColor");
+        GLint lightColorLoc  = glGetUniformLocation(lightingShader.Program, "lightColor");
+        GLint lightPosLoc    = glGetUniformLocation(lightingShader.Program, "lightPos");
+        GLint viewPosLoc     = glGetUniformLocation(lightingShader.Program, "viewPos");
+        glUniform3f(objectColorLoc, 1.0f, 0.5f, 0.31f);
+        glUniform3f(lightColorLoc,  1.0f, 1.0f, 1.0f);
+        glUniform3f(lightPosLoc,    lightPos.x, lightPos.y, lightPos.z);
+        glUniform3f(viewPosLoc,     camera.Position.x, camera.Position.y, camera.Position.z);
+ 
         // Camera/View transformation
         glm::mat4 view(1);
         view = camera.GetViewMatrix();
@@ -143,10 +142,9 @@ int main()
         glm::mat4 projection(1);
         projection = glm::perspective(glm::radians(camera.Zoom), (GLfloat)WIDTH / (GLfloat)HEIGHT, 0.1f, 100.0f);
         // Get the uniform locations
-        GLint modelLoc = glGetUniformLocation(ourShader.Program, "model");
-        GLint viewLoc = glGetUniformLocation(ourShader.Program, "view");
-        GLint projLoc = glGetUniformLocation(ourShader.Program, "projection");
-        GLint varyingColorLoc = glGetUniformLocation(ourShader.Program, "varyingColor");
+        GLint modelLoc = glGetUniformLocation(lightingShader.Program, "model");
+        GLint viewLoc = glGetUniformLocation(lightingShader.Program, "view");
+        GLint projLoc = glGetUniformLocation(lightingShader.Program, "projection");
         // Pass the matrices to the shader
         glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
         glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(projection));
@@ -157,11 +155,8 @@ int main()
         // Calculate the model matrix for each object and pass it to shader before drawing
         glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model)); // set model as transformation
 
-        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-        for (int i = 0; i < numFaces; i ++){
-            glUniform4f(varyingColorLoc, rValue[i], gValue[i], bValue[i], 1.0f); // pass color into fragment shader
-            glDrawArrays(GL_TRIANGLES, i * 3, 3);
-        }
+        // glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+        glDrawArrays(GL_TRIANGLES, 0, 3 * numFaces);
 
         glBindVertexArray(0); // unbind
         // Swap the screen buffers

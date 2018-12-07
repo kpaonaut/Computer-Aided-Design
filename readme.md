@@ -50,3 +50,10 @@ In this project, we draw a mini Solar System in 3D space with flat pictures of t
 In this project, we draw a [Bezier spline](https://en.wikipedia.org/wiki/B%C3%A9zier_curve) plane according to 25 control points.
 
 We also utilize the **tessellation** introduced by openGL V4.0+.
+
+## Seventh Project
+![](hw7/effect.gif)
+
+FAQ:
+Q: Where is the 6th project?
+A: It's actually a design project, so, no coding :)
