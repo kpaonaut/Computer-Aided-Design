@@ -24,18 +24,45 @@ void Physics::step( real_t dt )
     // Note, when you change the position/orientation of a physics object,
     // change the position/orientation of the graphical object that represents
     // it
-    // k1 = dt * spheres[i].velocity;
-    // k2 = dt * spheres[i].velocity + dt / 2.0 * spheres[i].force / spheres[i].mass;
-    // k3 = 
-    // for (int i = 0; i < spheres.size(); i++) {
-    //     spheres[i].step_position(dt, dt);
-    //     spheres[i].step_orientation(dt, dt);
-    // }
+    Vector3 k1, k2, k3, k4;
+    //printf("position: %f %f %f\n", spheres[0]->position.x, spheres[0]->position.y, spheres[0]->position.z);
+    //printf(velocity: "%f %f %f\n", spheres[0]->velocity.x, spheres[0]->velocity.y, spheres[0]->velocity.z);
+    //printf("force: %f %f %f\n", spheres[0]->force.x, spheres[0]->force.y, spheres[0]->force.z);
+    for (int i = 0; i < spheres.size(); i++) {
+        Vector3 deltaV = dt * spheres[i]->force / spheres[i]->mass;
+        spheres[i]->velocity += deltaV;
+
+        k1 = dt * spheres[i]->velocity;
+        k2 = dt * spheres[i]->step_velocity(k1/2.0, dt/2.0);
+        k3 = dt * spheres[i]->step_velocity(k2/2.0, dt/2.0);
+        k4 = dt * spheres[i]->step_velocity(k3, dt);
+        Vector3 deltaX = 1/6.0 * k1 + 1/3.0 * k2 + 1/3.0 * k3 + 1/6.0 * k4;
+        spheres[i]->position += deltaX;
+        // also change the position of the graphical object!
+        spheres[i]->sphere->position = spheres[i]->position;
+        k1 = dt * spheres[i]->angular_velocity;
+        k2 = dt * spheres[i]->step_angular_velocity(k1/2.0, dt/2.0);
+        k3 = dt * spheres[i]->step_angular_velocity(k2/2.0, dt/2.0);
+        k4 = dt * spheres[i]->step_angular_velocity(k3, dt);
+        Vector3 deltaTheta = 1/6.0 * k1 + 1/3.0 * k2 + 1/3.0 * k3 + 1/6.0 * k4;
+        Quaternion r = Quaternion(deltaTheta, length(deltaTheta));
+        spheres[i]->orientation = r * spheres[i]->orientation;
+        spheres[i]->sphere->orientation = spheres[i]->orientation;
+
+        //detect collision with plane && triangle
+        for (int j = 0; j < num_planes(); j++) {
+            
+        }
+        for (int j = 0; j < num_triangles(); j++) {
+
+        }
+    }
 }
 
 void Physics::add_sphere( SphereBody* b )
 {
     spheres.push_back( b );
+    b->apply_force(gravity, Vector3(0.0, 0.0, 0.0));
 }
 
 size_t Physics::num_spheres() const
