@@ -1,0 +1,155 @@
+README
+Author: Eric Butler <edbutler@andrew.cmu.edu>
+        Derek Basehor <dbasehor@andrew.cmu.edu>
+---------------------------------------------------------------------------
+Overview
+---------------------------------------------------------------------------
+
+In here you will find instructions for building the project and a
+short description of each source file.
+
+The starter code is nearly the same as the previous labs, so you should
+be familiar with most of it by now. The only new additions are the
+files realated to simulation.
+
+Report any bugs to the TAs.
+
+---------------------------------------------------------------------------
+Building the Code
+---------------------------------------------------------------------------
+
+Linux
+-------------------------
+
+Run 'make' to build the code. All builds are done in the 'bin/' directory,
+and the final binary is copied to the top-level directory.
+
+There are two build modes: debug and release. Debug is the default. Debug
+builds with no optimizations and debugging info, while release builds with
+optimizations and no debugging info. Run 'make MODE=debug' or
+'make MODE=release' to build the different modes. We highly suggest using
+debug mode while developing the code.
+
+NOTE: You be at a physical machine to build on school machines. Using
+ssh and X-forwarding will not work, and won't even compile. If you do
+not wish to be at school and don't have Linux on your home machine, we
+have a build for Visual Studio on Windows. You will, however, still have
+to make sure it works on the school machines.
+
+All needed libraries and headers are installed on school machines. If
+building on your own machine, you will need to install headers/libs for:
+-SDL
+-libpng
+-GLEW
+
+Windows
+-------------------------
+
+For convenience, we provide a Visual Studio 2008 solution for the project.
+You can find it in the msvc/ folder. All needed external headers, libraries,
+and dlls are included.
+
+Visual C++ 2008 Express Edition is freely available and suitable for
+buildilng the project.
+
+Note: since the current directory will be the msvc/ folder when debugging, 
+the application will not correctly find the models/ folder at runtime.
+Therefore, you must either change the current directory for debugging or
+copy the models/ folder into the msvc/ folder.
+
+Note: Your program MUST COMPILE on the SCS Linux machines. If you use
+Windows, make sure to test on Linux well in advance of the deadline.
+
+---------------------------------------------------------------------------
+Running the Program
+---------------------------------------------------------------------------
+
+./physics [scene]
+
+The program should take just a single argument, which is the scene
+you are rendering. It may have whichever controls you
+like, though they should be documented in the writeup.txt.
+
+---------------------------------------------------------------------------
+C++ Notes
+---------------------------------------------------------------------------
+
+For the sake of simpler math routines and data structures, the code uses
+C++ over straight C. The code tries to stay away from most features of the
+language to keep it as simple as possible. This project attempts to break
+you into C++ easily.
+
+Questions about virtual functions, classes, or any C++ idioms are welcome.
+
+---------------------------------------------------------------------------
+Source Files and Directory Structure
+---------------------------------------------------------------------------
+
+The code base is rather big, so here's a description of the top-level
+directories and every header/source file pair we give you. You are free
+to edit any of them and add as many as you like, as long as the program
+behavior remains the same.
+
+Also, feel free to use any files (either starter code or your code) from
+previous labs to help with the current project.
+
+You should have a look at:
+- writeup.txt
+- src/physics/*
+
+Note: we omit the '.cpp' or '.hpp' from the source file names
+in the follow listing.
+
+Legend:
+#   - must edit this file
+*   - should look at (header) file
+
+README              -- this file
+writeup.txt#        -- Description of your project and implementation.
+
+Makefile            -- makefile for the project.
+make.mk             -- more of the makefile.
+sources.mk          -- list of sources and target, edit to add new source files
+
+models/             -- models used in scenes.
+images/             -- textures used in scenes.
+
+src/physics/        == Project-specific files.
+    body*           -- contains the parent class for physical bodies
+    collisions#     -- contains functions for detecting collisions
+    main            -- contains main function for project
+    physics#        -- contains the physics object which contains all physical
+                        objects and updates everything. Must edit to implement
+                        RK4 for spheres.
+    planebody*      -- contains the planebody class. Mostly just a container
+    spherebody#     -- contains the spherebody class. Must edit to do step and
+                        application of forces
+    spring#         -- contains the spring class. Must edit so that it applies
+                        spring forces to objects
+    trianglebody*   -- contains the trianglebody class. Like the planebody class
+                        it is mostly just a container
+
+src/application/    == General application files. You can ignore all of it.
+    application     -- SDL backend, runs main loop.
+    camera_roam     -- camera controller
+    imageio         -- used for outputting images
+    opengl          -- Header to include correct OpenGL headers.
+    scene_loader    -- Code to load a scene from a file.
+
+src/math/           == Math utilities.
+    camera          -- Camera class with functions to mutate.
+    color           -- A class for RGB colors and related functions.
+    math            -- Basic header and a few generic functions.
+    matrix          -- 3D, 4D matrix classes and several related functions.
+    quaternion      -- Quaternion class and several related functions--very
+                        useful for 3D rotations.
+    vector          -- 2D, 3D, 4D vector classes and many related functions.
+
+src/scene/          == Scene-specific files and rendering. You can ignore all
+                        of this (mostly the same as raytracer scene files)
+
+src/tinyxml/         == XML parser
+    ...             -- Don't worry about it, you'll be better off
+
+
+

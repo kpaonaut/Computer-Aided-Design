@@ -1,0 +1,102 @@
+
+<scene>
+    <camera>
+        <fov v=".785"/>
+        <near_clip v=".01"/>
+        <far_clip v="200.0"/>
+        <position x="0.0" y="3.75" z="-14.0"/>
+        <orientation a="3.14" x="0.0" y="-1.0" z="0.0"/>
+    </camera>
+
+    <background_color r="0.4" g="0.4" b="0.4"/>
+
+    <refractive_index v="1.0"/>
+
+    <ambient_light r="0.2" g="0.2" b="0.2"/>
+
+    <gravity x="0.0" y="-9.8" z="0.0"/>
+
+    <point_light>
+        <position x="1.0" y="3.0" z="-12.0"/>
+        <color r="1.0" g="1.0" b="1.0"/>
+    </point_light>
+
+    <material name="mirror" texture="images/arrow.png">
+        <ambient r="0.0" g="0.0" b="0.0"/>
+        <diffuse r="1.0" g="0.0" b="0.0"/>
+        <specular r="1.0" g="1.0" b="1.0"/>
+        <refractive_index v="0.0"/>
+    </material>
+
+	<material name="wood" texture="images/wood2.png">
+        <refractive_index v="0.0"/>
+        <ambient r="0.8" g="0.8" b="0.8"/>
+        <diffuse r="0.8" g="0.8" b="0.8"/>
+        <specular r="0.4" g="0.4" b="0.4"/>
+    </material>
+ 
+    <sphere material="mirror">
+        <position x="0.0" y="0.0" z="0.0"/>
+        <radius v="1.0"/>
+        <body>
+            <id i="1"/>
+            <velocity x="1.0" y="0.0" z="0.0"/>
+            <mass v="1.0"/>
+        </body>
+    </sphere>
+
+	<vertex name="p1" material="wood">
+		<position x="-6.0" y="4.0" z="-2.0"/>
+		<normal x="0.0" y="1.0" z="0.0"/>
+		<tex_coord u="0.0" v="0.0"/>
+	</vertex>
+	
+	<vertex name="p2" material="wood">
+		<position x="-6.0" y="4.0" z="2.0"/>
+		<normal x="0.0" y="1.0" z="0.0"/>
+		<tex_coord u="0.0" v="0.0"/>
+	</vertex>	
+
+	<vertex name="p3" material="wood">
+		<position x="6.0" y="4.0" z="2.0"/>
+		<normal x="0.0" y="1.0" z="0.0"/>
+		<tex_coord u="0.0" v="0.0"/>
+	</vertex>	
+
+	<vertex name="p4" material="wood">
+		<position x="6.0" y="4.0" z="-2.0"/>
+		<normal x="0.0" y="1.0" z="0.0"/>
+		<tex_coord u="0.0" v="0.0"/>
+	</vertex>	
+
+	<triangle material="wood">
+		<position x="0.0" y="0.0" z="0.0"/>
+		<vertex name="p1"/>
+		<vertex name="p2"/>
+		<vertex name="p3"/>
+		<body>
+			<id i="2"/>
+		</body>
+	</triangle>
+
+	<triangle material="wood">
+		<position x="0.0" y="0.0" z="0.0"/>
+		<vertex name="p1"/>
+		<vertex name="p3"/>
+		<vertex name="p4"/>
+		<body>
+			<id i="3"/>
+		</body>
+	</triangle>
+
+	<spring>
+		<constant v="1000.0"/>
+		<equilibrium v="2.9902"/>
+		<body1 i="1"/>
+		<body2 i="2"/>
+        <offset1 x="0.0" y="1.0" z="0.0"/>
+		<offset2 x="6.0" y="0.0" z="2.0"/>
+        <damping v="0.1"/>
+	</spring>
+</scene>
+

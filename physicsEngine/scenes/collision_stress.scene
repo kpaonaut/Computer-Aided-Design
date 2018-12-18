@@ -1,0 +1,530 @@
+
+<scene>
+    <camera>
+        <fov v=".785"/>
+        <near_clip v=".01"/>
+        <far_clip v="200.0"/>
+        <position x="0.0" y="12.0" z="45.0"/>
+        <orientation a="0.0" x="0.0" y="-1.0" z="0.0"/>
+    </camera>
+
+    <background_color r="0.4" g="0.4" b="0.4"/>
+
+    <refractive_index v="1.0"/>
+
+    <ambient_light r="0.2" g="0.2" b="0.2"/>
+
+    <point_light>
+        <position x="1.0" y="3.0" z="12.0"/>
+        <color r="1.0" g="1.0" b="1.0"/>
+    </point_light>
+
+    <material name="red">
+        <ambient r="1.0" g="0.0" b="0.0"/>
+        <diffuse r="1.0" g="0.0" b="0.0"/>
+        <specular r="0.0" g="0.0" b="0.0"/>
+        <refractive_index v="0.0"/>
+    </material>
+
+    <material name="sred">
+        <ambient r="1.0" g="0.0" b="0.0"/>
+        <diffuse r="1.0" g="0.0" b="0.0"/>
+        <specular r="1.0" g="1.0" b="1.0"/>
+        <refractive_index v="0.0"/>
+    </material>
+
+    <material name="green">
+        <ambient r="0.0" g="1.0" b="0.0"/>
+        <diffuse r="0.0" g="1.0" b="0.0"/>
+        <specular r="0.0" g="0.0" b="0.0"/>
+        <refractive_index v="0.0"/>
+    </material>
+
+    <material name="sgreen">
+        <ambient r="0.0" g="1.0" b="0.0"/>
+        <diffuse r="0.0" g="1.0" b="0.0"/>
+        <specular r="1.0" g="1.0" b="1.0"/>
+        <refractive_index v="0.0"/>
+    </material>
+
+    <material name="blue">
+        <ambient r="0.0" g="0.0" b="1.0"/>
+        <diffuse r="0.0" g="0.0" b="1.0"/>
+        <specular r="0.0" g="0.0" b="0.0"/>
+        <refractive_index v="0.0"/>
+    </material>
+
+    <material name="sblue">
+        <ambient r="0.0" g="0.0" b="1.0"/>
+        <diffuse r="0.0" g="0.0" b="1.0"/>
+        <specular r="0.0" g="1.0" b="1.0"/>
+        <refractive_index v="0.0"/>
+    </material>
+
+    <sphere material="sred">
+        <position x="10.0" y="0.0" z="2.0"/>
+        <radius v="1.0"/>
+        <body>
+            <id i="1"/>
+            <velocity x="-100.0" y="20.0" z="0.0"/>
+            <mass v="1.0"/>
+        </body>
+    </sphere>
+
+    <sphere material="sred">
+        <position x="0.0" y="0.0" z="9.0"/>
+        <radius v="1.0"/>
+        <body>
+            <id i="1"/>
+            <velocity x="40.0" y="20.0" z="0.0"/>
+            <mass v="1.0"/>
+        </body>
+    </sphere>
+
+    <sphere material="sred">
+        <position x="14.0" y="0.0" z="0.0"/>
+        <radius v="1.0"/>
+        <body>
+            <id i="1"/>
+            <velocity x="40.0" y="12.0" z="30.0"/>
+            <mass v="1.0"/>
+        </body>
+    </sphere>
+
+    <sphere material="sred">
+        <position x="4.0" y="0.0" z="0.0"/>
+        <radius v="1.0"/>
+        <body>
+            <id i="1"/>
+            <velocity x="54.0" y="28.0" z="15.0"/>
+            <mass v="1.0"/>
+        </body>
+    </sphere>
+
+    <sphere material="sred">
+        <position x="-2.0" y="20.0" z="5.0"/>
+        <radius v="1.0"/>
+        <body>
+            <id i="2"/>
+            <velocity x="14.0" y="25.0" z="40.0"/>
+            <mass v="1.0"/>
+        </body>
+    </sphere>
+
+    <sphere material="sred">
+        <position x="-8.0" y="18.0" z="9.0"/>
+        <radius v="1.0"/>
+        <body>
+            <id i="2"/>
+            <velocity x="-40.0" y="20.0" z="10.0"/>
+            <mass v="1.0"/>
+        </body>
+    </sphere>
+
+    <sphere material="sred">
+        <position x="-4.0" y="17.0" z="-5.0"/>
+        <radius v="1.0"/>
+        <body>
+            <id i="2"/>
+            <velocity x="4.0" y="2.0" z="0.0"/>
+            <mass v="1.0"/>
+        </body>
+    </sphere>
+
+    <sphere material="sred">
+        <position x="-2.0" y="24.0" z="5.0"/>
+        <radius v="1.0"/>
+        <body>
+            <id i="2"/>
+            <velocity x="14.0" y="-20.0" z="10.0"/>
+            <mass v="1.0"/>
+        </body>
+    </sphere>
+
+    <sphere material="sblue">
+        <position x="12.0" y="5.0" z="4.0"/>
+        <radius v="1.0"/>
+        <body>
+            <id i="3"/>
+            <velocity x="-44.0" y="32.0" z="-33.0"/>
+            <mass v="1.0"/>
+        </body>
+    </sphere>
+
+    <sphere material="sblue">
+        <position x="-5.0" y="5.0" z="9.0"/>
+        <radius v="1.0"/>
+        <body>
+            <id i="3"/>
+            <velocity x="20.0" y="-2.0" z="-13.0"/>
+            <mass v="1.0"/>
+        </body>
+    </sphere>
+
+    <sphere material="sblue">
+        <position x="9.0" y="12.0" z="4.0"/>
+        <radius v="1.0"/>
+        <body>
+            <id i="3"/>
+            <velocity x="4.0" y="2.0" z="-3.0"/>
+            <mass v="1.0"/>
+        </body>
+    </sphere>
+
+    <sphere material="sblue">
+        <position x="2.0" y="25.0" z="1.0"/>
+        <radius v="1.0"/>
+        <body>
+            <id i="3"/>
+            <velocity x="-25.0" y="10.0" z="20.0"/>
+            <mass v="1.0"/>
+        </body>
+    </sphere>
+
+    <sphere material="sblue">
+        <position x="9.0" y="5.0" z="4.0"/>
+        <radius v="1.0"/>
+        <body>
+            <id i="3"/>
+            <velocity x="10.0" y="2.0" z="-25.0"/>
+            <mass v="1.0"/>
+        </body>
+    </sphere>
+
+    <sphere material="sblue">
+        <position x="0.0" y="15.0" z="13.0"/>
+        <radius v="1.0"/>
+        <body>
+            <id i="3"/>
+            <velocity x="4.0" y="2.0" z="-3.0"/>
+            <mass v="1.0"/>
+        </body>
+    </sphere>
+
+    <sphere material="sblue">
+        <position x="6.0" y="5.0" z="4.0"/>
+        <radius v="1.0"/>
+        <body>
+            <id i="3"/>
+            <velocity x="4.0" y="2.0" z="-3.0"/>
+            <mass v="1.0"/>
+        </body>
+    </sphere>
+
+    <sphere material="sblue">
+        <position x="0.0" y="1.0" z="-5.0"/>
+        <radius v="1.0"/>
+        <body>
+            <id i="4"/>
+            <velocity x="4.0" y="2.0" z="-3.0"/>
+            <mass v="1.0"/>
+        </body>
+    </sphere>
+
+    <sphere material="sgreen">
+        <position x="12.0" y="9.0" z="0.0"/>
+        <radius v="1.0"/>
+        <body>
+            <id i="5"/>
+            <velocity x="100.0" y="5.0" z="0.0"/>
+            <mass v="1.0"/>
+        </body>
+    </sphere>
+
+    <sphere material="sgreen">
+        <position x="-2.0" y="19.0" z="3.0"/>
+        <radius v="1.0"/>
+        <body>
+            <id i="5"/>
+            <velocity x="0.0" y="-50.0" z="0.0"/>
+            <mass v="1.0"/>
+        </body>
+    </sphere>
+
+    <sphere material="sgreen">
+        <position x="8.0" y="24.0" z="2.0"/>
+        <radius v="1.0"/>
+        <body>
+            <id i="5"/>
+            <velocity x="0.0" y="5.0" z="30.0"/>
+            <mass v="1.0"/>
+        </body>
+    </sphere>
+
+    <sphere material="sgreen">
+        <position x="2.0" y="9.0" z="13.0"/>
+        <radius v="1.0"/>
+        <body>
+            <id i="5"/>
+            <velocity x="25.0" y="5.0" z="-10.0"/>
+            <mass v="1.0"/>
+        </body>
+    </sphere>
+
+    <sphere material="sgreen">
+        <position x="2.0" y="19.0" z="0.0"/>
+        <radius v="1.0"/>
+        <body>
+            <id i="5"/>
+            <velocity x="20.0" y="5.0" z="0.0"/>
+            <mass v="1.0"/>
+        </body>
+    </sphere>
+
+    <sphere material="sgreen">
+        <position x="11.0" y="-1.0" z="0.0"/>
+        <radius v="1.0"/>
+        <body>
+            <id i="5"/>
+            <velocity x="30.0" y="5.0" z="0.0"/>
+            <mass v="1.0"/>
+        </body>
+    </sphere>
+
+    <sphere material="sgreen">
+        <position x="12.0" y="9.0" z="-11.0"/>
+        <radius v="1.0"/>
+        <body>
+            <id i="5"/>
+            <velocity x="0.0" y="5.0" z="50.0"/>
+            <mass v="1.0"/>
+        </body>
+    </sphere>
+
+    <sphere material="sgreen">
+        <position x="2.0" y="9.0" z="0.0"/>
+        <radius v="1.0"/>
+        <body>
+            <id i="5"/>
+            <velocity x="0.0" y="5.0" z="0.0"/>
+            <mass v="1.0"/>
+        </body>
+    </sphere>
+
+    <vertex name="p1" material="red">
+        <position x="16.0" y="-4.0" z="-16.0"/>
+        <normal x="0.0" y="1.0" z="0.0"/>
+        <tex_coord u="0.0" v="0.0"/>
+    </vertex>
+        
+    <vertex name="p2" material="red">
+        <position x="-16.0" y="-4.0" z="-16.0"/>
+        <normal x="0.0" y="1.0" z="0.0"/>
+        <tex_coord u="0.0" v="0.0"/>
+    </vertex>
+        
+    <vertex name="p3" material="red">
+        <position x="16.0" y="-4.0" z="16.0"/>
+        <normal x="0.0" y="1.0" z="0.0"/>
+        <tex_coord u="0.0" v="0.0"/>
+    </vertex>
+        
+    <vertex name="p4" material="red">
+        <position x="-16.0" y="-4.0" z="16.0"/>
+        <normal x="0.0" y="1.0" z="0.0"/>
+        <tex_coord u="0.0" v="0.0"/>
+    </vertex>
+    
+    <triangle material="red">
+        <position x="0.0" y="0.0" z="0.0"/>
+        <vertex name="p1"/>
+        <vertex name="p2"/>
+        <vertex name="p3"/>
+        <body>
+            <id i="6"/>
+        </body>
+    </triangle>
+    
+    <triangle material="red">
+        <position x="0.0" y="0.0" z="0.0"/>
+        <vertex name="p3"/>
+        <vertex name="p2"/>
+        <vertex name="p4"/>
+        <body>
+            <id i="7"/>
+        </body>
+    </triangle>
+    
+    <vertex name="p5" material="red">
+        <position x="16.0" y="28.0" z="-16.0"/>
+        <normal x="0.0" y="-1.0" z="0.0"/>
+        <tex_coord u="0.0" v="0.0"/>
+    </vertex>
+        
+    <vertex name="p6" material="red">
+        <position x="-16.0" y="28.0" z="-16.0"/>
+        <normal x="0.0" y="-1.0" z="0.0"/>
+        <tex_coord u="0.0" v="0.0"/>
+    </vertex>
+        
+    <vertex name="p7" material="red">
+        <position x="16.0" y="28.0" z="16.0"/>
+        <normal x="0.0" y="-1.0" z="0.0"/>
+        <tex_coord u="0.0" v="0.0"/>
+    </vertex>
+        
+    <vertex name="p8" material="red">
+        <position x="-16.0" y="28.0" z="16.0"/>
+        <normal x="0.0" y="-1.0" z="0.0"/>
+        <tex_coord u="0.0" v="0.0"/>
+    </vertex>
+    
+    <triangle material="red">
+        <position x="0.0" y="0.0" z="0.0"/>
+        <vertex name="p5"/>
+        <vertex name="p7"/>
+        <vertex name="p6"/>
+        <body>
+            <id i="8"/>
+        </body>
+    </triangle>
+    
+    <triangle material="red">
+        <position x="0.0" y="0.0" z="0.0"/>
+        <vertex name="p7"/>
+        <vertex name="p8"/>
+        <vertex name="p6"/>
+        <body>
+            <id i="9"/>
+        </body>
+    </triangle>
+
+    <vertex name="p9" material="blue">
+        <position x="16.0" y="-4.0" z="-16.0"/>
+        <normal x="-1.0" y="0.0" z="0.0"/>
+        <tex_coord u="0.0" v="0.0"/>
+    </vertex>
+        
+    <vertex name="p10" material="blue">
+        <position x="16.0" y="-4.0" z="16.0"/>
+        <normal x="-1.0" y="0.0" z="0.0"/>
+        <tex_coord u="0.0" v="0.0"/>
+    </vertex>
+        
+    <vertex name="p11" material="blue">
+        <position x="16.0" y="28.0" z="16.0"/>
+        <normal x="-1.0" y="0.0" z="0.0"/>
+        <tex_coord u="0.0" v="0.0"/>
+    </vertex>
+        
+    <vertex name="p12" material="blue">
+        <position x="16.0" y="28.0" z="-16.0"/>
+        <normal x="-1.0" y=".0" z="0.0"/>
+        <tex_coord u="0.0" v="0.0"/>
+    </vertex>
+
+    <triangle material="blue">
+        <position x="0.0" y="0.0" z="0.0"/>
+        <vertex name="p9"/>
+        <vertex name="p10"/>
+        <vertex name="p11"/>
+        <body>
+            <id i="10"/>
+        </body>
+    </triangle>
+    
+    <triangle material="blue">
+        <position x="0.0" y="0.0" z="0.0"/>
+        <vertex name="p11"/>
+        <vertex name="p12"/>
+        <vertex name="p9"/>
+        <body>
+            <id i="11"/>
+        </body>
+    </triangle>
+        
+    <vertex name="p13" material="blue">
+        <position x="-16.0" y="-4.0" z="-16.0"/>
+        <normal x="1.0" y="0.0" z="0.0"/>
+        <tex_coord u="0.0" v="0.0"/>
+    </vertex>
+        
+    <vertex name="p14" material="blue">
+        <position x="-16.0" y="-4.0" z="16.0"/>
+        <normal x="1.0" y="0.0" z="0.0"/>
+        <tex_coord u="0.0" v="0.0"/>
+    </vertex>
+        
+    <vertex name="p15" material="blue">
+        <position x="-16.0" y="28.0" z="16.0"/>
+        <normal x="1.0" y="0.0" z="0.0"/>
+        <tex_coord u="0.0" v="0.0"/>
+    </vertex>
+        
+    <vertex name="p16" material="blue">
+        <position x="-16.0" y="28.0" z="-16.0"/>
+        <normal x="1.0" y=".0" z="0.0"/>
+        <tex_coord u="0.0" v="0.0"/>
+    </vertex>
+
+    <triangle material="blue">
+        <position x="0.0" y="0.0" z="0.0"/>
+        <vertex name="p13"/>
+        <vertex name="p15"/>
+        <vertex name="p14"/>
+        <body>
+            <id i="12"/>
+        </body>
+    </triangle>
+    
+    <triangle material="blue">
+        <position x="0.0" y="0.0" z="0.0"/>
+        <vertex name="p16"/>
+        <vertex name="p15"/>
+        <vertex name="p13"/>
+        <body>
+            <id i="13"/>
+        </body>
+    </triangle>
+        
+    <vertex name="p17" material="green">
+        <position x="-16.0" y="28.0" z="-16.0"/>
+        <normal x="0.0" y="0.0" z="1.0"/>
+        <tex_coord u="0.0" v="0.0"/>
+    </vertex>
+        
+    <vertex name="p18" material="green">
+        <position x="16.0" y="28.0" z="-16.0"/>
+        <normal x="0.0" y="0.0" z="1.0"/>
+        <tex_coord u="0.0" v="0.0"/>
+    </vertex>
+        
+    <vertex name="p19" material="green">
+        <position x="-16.0" y="-4.0" z="-16.0"/>
+        <normal x="0.0" y="0.0" z="1.0"/>
+        <tex_coord u="0.0" v="0.0"/>
+    </vertex>
+        
+    <vertex name="p20" material="green">
+        <position x="16.0" y="-4.0" z="-16.0"/>
+        <normal x="0.0" y=".0" z="1.0"/>
+        <tex_coord u="0.0" v="0.0"/>
+    </vertex>
+
+    <triangle material="green">
+        <position x="0.0" y="0.0" z="0.0"/>
+        <vertex name="p17"/>
+        <vertex name="p19"/>
+        <vertex name="p18"/>
+        <body>
+            <id i="14"/>
+        </body>
+    </triangle>
+    
+    <triangle material="blue">
+        <position x="0.0" y="0.0" z="0.0"/>
+        <vertex name="p20"/>
+        <vertex name="p18"/>
+        <vertex name="p19"/>
+        <body>
+            <id i="14"/>
+        </body>
+    </triangle>
+
+    <plane_body>
+        <id i="15"/>
+        <position x="0.0" y="0.0" z="16.0"/>
+        <normal x="0.0" y="0.0" z="-1.0"/>
+    </plane_body>
+</scene>
+
