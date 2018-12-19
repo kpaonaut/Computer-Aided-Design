@@ -11,11 +11,11 @@ class Sphere;
 class SphereBody : public Body
 {
 public:
-    Sphere* sphere;
-    real_t radius;
-    real_t mass;
-    Vector3 force;
-    Vector3 torque;
+    //Sphere* sphere;
+    // real_t radius;
+    // real_t mass;
+    // Vector3 force;
+    // Vector3 torque;
 
     SphereBody( Sphere* geom );
     virtual ~SphereBody() { }

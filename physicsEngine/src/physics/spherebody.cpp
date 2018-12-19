@@ -40,7 +40,8 @@ Vector3 SphereBody::step_position( real_t dt, real_t motion_damping )
     // k1 = dt * velocity;
     // k2 = dt * velocity + dt / 2.0 * spheres[i].force / spheres[i].mass;
     // k3 = dt * 
-    return velocity * dt;
+    Vector3 acceleration = force / mass;
+    return velocity + acceleration * dt;
 }
 
 Vector3 SphereBody::step_orientation( real_t dt, real_t motion_damping )
@@ -52,8 +53,8 @@ Vector3 SphereBody::step_orientation( real_t dt, real_t motion_damping )
     // vec.x = rotation along x axis
     // vec.y = rotation along y axis
     // vec.z = rotation along z axis
-
-    return Vector3::Zero;
+    Vector3 angular_acceleration = torque / (2.0/5.0 * mass * radius * radius);
+    return angular_velocity + angular_acceleration * dt;
 }
 
 void SphereBody::apply_force( const Vector3& f, const Vector3& offset )
