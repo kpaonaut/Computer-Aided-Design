@@ -6,9 +6,9 @@
 
 ![](demo/collision.gif)
 ![](demo/collision_slow.gif)
-![](demo/damping.gif)
-![](demo/newton.gif)
 ![](demo/rotation_test.gif)
+![](demo/newton.gif)
+![](demo/damping.gif)
 ![](demo/spring_rotation.gif)
 
 ### Notice

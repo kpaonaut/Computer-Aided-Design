@@ -57,3 +57,21 @@ We also utilize the **tessellation** introduced by openGL V4.0+.
 FAQ:
 Q: Where is the 6th project?
 A: It's actually a design project, so, no coding :)
+
+
+## Eigth Project: Simple Physics Engine
+
+![](physicsEngine/demo/collision.gif)
+![](physicsEngine/demo/collision_slow.gif)
+![](physicsEngine/demo/spring_rotation.gif)
+![](physicsEngine/demo/newton.gif)
+![](physicsEngine/demo/damping.gif)
+![](physicsEngine/demo/rotation_test.gif)
+
+### Notice
+This project is the homework assignment of a CMU course __Computer Aided Design__. You can find the instructions of this project from the files additionalMaterial.pdf and README. Note that quite some libraries have to be installed properly on your computer before you can run `make`. The makefile is only composed for Mac, and need to be changed a bit for Linux or Windows systems.
+
+### Usage
+On my mac, with [libpng](http://www.libpng.org/pub/png/libpng.html)(ONLY version 12!) installed under lib/lib (already contained in the folder), first run `source compile.sh`.
+
+After that, as long as you keep the terminal open, you should only need to run `make` to compile new changes and run `./physics scenes/The_scene_you_want_to_load`.
