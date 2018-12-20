@@ -20,7 +20,7 @@ public:
     Vector3 body1_offset;
     Vector3 body2_offset;
 
-    Vector3 prev_force;
+    Vector3 prev_force, prev_body1_offset, prev_body2_offset;
 };
 
 }
