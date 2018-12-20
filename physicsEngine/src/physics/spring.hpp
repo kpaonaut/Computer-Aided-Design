@@ -19,6 +19,8 @@ public:
     Body* body2;
     Vector3 body1_offset;
     Vector3 body2_offset;
+
+    Vector3 prev_force;
 };
 
 }

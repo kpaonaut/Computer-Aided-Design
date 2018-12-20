@@ -7,6 +7,7 @@ namespace _462 {
 bool collides( SphereBody& body1, SphereBody& body2, real_t collision_damping )
 {
     // TODO detect collision. If there is one, update velocity
+    // std::cout << "damping:" << collision_damping << std::endl;
     Vector3 deltaP = body1.position - body2.position;
     Vector3 deltaV = body1.velocity - body2.velocity;
     if ((dot(deltaP, deltaV) < 0) && (length(deltaP) < body1.radius + body2.radius)) {
@@ -15,6 +16,8 @@ bool collides( SphereBody& body1, SphereBody& body2, real_t collision_damping )
       Vector3 u2 = body2.velocity + 2 * d * body1.mass / (body1.mass + body2.mass) * dot(v1p, d);
       body1.velocity = body1.mass * body1.velocity + body2.mass * body2.velocity - body2.mass * u2;
       body2.velocity = u2;
+      body1.velocity *= (1 - collision_damping);
+      body2.velocity *= (1 - collision_damping);
       return true;
     }
     else
@@ -39,6 +42,7 @@ bool collides( SphereBody& body1, TriangleBody& body2, real_t collision_damping 
   Vector3 deltaV = body1.velocity - body2.velocity;
   if ((d < body1.radius) && (dot(deltaP, deltaV) < 0)) {
     body1.velocity = body1.velocity - 2 * (dot(body1.velocity, normal)) * normal;
+    body1.velocity *= (1 - collision_damping);
     return true;
   }
   else
@@ -57,6 +61,7 @@ bool collides( SphereBody& body1, PlaneBody& body2, real_t collision_damping )
   Vector3 deltaV = body1.velocity - body2.velocity;
   if ((d < body1.radius) && (dot(deltaP, deltaV) < 0)) {
     body1.velocity = body1.velocity - 2 * (dot(body1.velocity, body2.normal)) * body2.normal;
+    body1.velocity *= (1 - collision_damping);
     return true;
   }
   else

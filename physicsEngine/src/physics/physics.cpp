@@ -34,26 +34,8 @@ void Physics::step( real_t dt )
     //std::cout << gravity << std::endl;
     //std::cout << num_triangles() << std::endl;
     for (int i = 0; i < spheres.size(); i++) {
-        Vector3 deltaV = dt * spheres[i]->force / spheres[i]->mass;
-        spheres[i]->velocity += deltaV;
-
-        k1 = dt * spheres[i]->velocity;
-        k2 = dt * spheres[i]->step_position(dt/2.0, 0);
-        k3 = dt * spheres[i]->step_position(dt/2.0, 0);
-        k4 = dt * spheres[i]->step_position(dt, 0);
-        Vector3 deltaX = 1/6.0 * k1 + 1/3.0 * k2 + 1/3.0 * k3 + 1/6.0 * k4;
-        spheres[i]->position += deltaX;
-        // also change the position of the graphical object!
-        spheres[i]->sphere->position = spheres[i]->position;
-
-        k1 = dt * spheres[i]->angular_velocity;
-        k2 = dt * spheres[i]->step_orientation(dt/2.0, 0);
-        k3 = dt * spheres[i]->step_orientation(dt/2.0, 0);
-        k4 = dt * spheres[i]->step_orientation(dt, 0);
-        Vector3 deltaTheta = 1/6.0 * k1 + 1/3.0 * k2 + 1/3.0 * k3 + 1/6.0 * k4;
-        Quaternion r = Quaternion(deltaTheta, length(deltaTheta));
-        spheres[i]->orientation = r * spheres[i]->orientation;
-        spheres[i]->sphere->orientation = spheres[i]->orientation;
+        spheres[i]->step_position(dt, 0);
+        spheres[i]->step_orientation(dt, 0);
     }
 
     for (int i = 0; i < num_spheres(); i++) {
@@ -71,63 +53,22 @@ void Physics::step( real_t dt )
 
     for (int i = 0; i < num_springs(); i++) {
         springs[i]->step(dt);
-        Vector3 deltaV = dt * springs[i]->body1->force / spheres[i]->mass;
-        springs[i]->body1->velocity += deltaV;
-        deltaV = dt * springs[i]->body2->force / spheres[i]->mass;
-        springs[i]->body2->velocity += deltaV;
 
-        k1 = dt * springs[i]->body1->velocity;
-        k2 = dt * springs[i]->body1->step_position(dt/2.0, springs[i]->damping);
-        k3 = dt * springs[i]->body1->step_position(dt/2.0, springs[i]->damping);
-        k4 = dt * springs[i]->body1->step_position(dt, springs[i]->damping);
-        Vector3 deltaX = 1/6.0 * k1 + 1/3.0 * k2 + 1/3.0 * k3 + 1/6.0 * k4;
-        springs[i]->body1->position += deltaX;
-        springs[i]->body1->sphere->position = spheres[i]->position;
+        springs[i]->body1->step_position(dt, 0);
+        springs[i]->body1->step_orientation(dt, 0);
 
-        k1 = dt * springs[i]->body1->angular_velocity;
-        k2 = dt * springs[i]->body1->step_orientation(dt/2.0, 0);
-        k3 = dt * springs[i]->body1->step_orientation(dt/2.0, 0);
-        k4 = dt * springs[i]->body1->step_orientation(dt, 0);
-        Vector3 deltaTheta = 1/6.0 * k1 + 1/3.0 * k2 + 1/3.0 * k3 + 1/6.0 * k4;
-        Quaternion r = Quaternion(deltaTheta, length(deltaTheta));
-        springs[i]->body1->orientation = r * spheres[i]->orientation;
-        springs[i]->body1->sphere->orientation = spheres[i]->orientation;
+        springs[i]->body2->step_position(dt, 0);
+        springs[i]->body2->step_orientation(dt, 0);
 
-
-        k1 = dt * springs[i]->body2->velocity;
-        k2 = dt * springs[i]->body2->step_position(dt/2.0, springs[i]->damping);
-        k3 = dt * springs[i]->body2->step_position(dt/2.0, springs[i]->damping);
-        k4 = dt * springs[i]->body2->step_position(dt, springs[i]->damping);
-        deltaX = 1/6.0 * k1 + 1/3.0 * k2 + 1/3.0 * k3 + 1/6.0 * k4;
-        springs[i]->body2->position += deltaX;
-        springs[i]->body2->sphere->position = spheres[i]->position;
-
-        k1 = dt * springs[i]->body2->angular_velocity;
-        k2 = dt * springs[i]->body2->step_orientation(dt/2.0, 0);
-        k3 = dt * springs[i]->body2->step_orientation(dt/2.0, 0);
-        k4 = dt * springs[i]->body2->step_orientation(dt, 0);
-        deltaTheta = 1/6.0 * k1 + 1/3.0 * k2 + 1/3.0 * k3 + 1/6.0 * k4;
-        r = Quaternion(deltaTheta, length(deltaTheta));
-        springs[i]->body2->orientation = r * spheres[i]->orientation;
-        springs[i]->body2->sphere->orientation = spheres[i]->orientation;
-
-        // // also change the position of the graphical object!
-        // spheres[i]->sphere->position = spheres[i]->position;
-        // k1 = dt * spheres[i]->angular_velocity;
-        // k2 = dt * spheres[i]->step_angular_velocity(k1/2.0, dt/2.0);
-        // k3 = dt * spheres[i]->step_angular_velocity(k2/2.0, dt/2.0);
-        // k4 = dt * spheres[i]->step_angular_velocity(k3, dt);
-        // Vector3 deltaTheta = 1/6.0 * k1 + 1/3.0 * k2 + 1/3.0 * k3 + 1/6.0 * k4;
-        // Quaternion r = Quaternion(deltaTheta, length(deltaTheta));
-        // spheres[i]->orientation = r * spheres[i]->orientation;
-        // spheres[i]->sphere->orientation = spheres[i]->orientation;
+        //std::cout<< "1: velocity "<< springs[i]->body1->velocity << " position " << springs[i]->body1->position << std::endl;
+        //std::cout<< "2: velocity "<< springs[i]->body2->velocity << " position " << springs[i]->body2->position << std::endl;
     }
 }
 
 void Physics::add_sphere( SphereBody* b )
 {
     spheres.push_back( b );
-    b->apply_force(gravity, Vector3(0.0, 0.0, 0.0));
+    b->apply_force(gravity, Vector3::Zero);
 }
 
 size_t Physics::num_spheres() const
